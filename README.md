@@ -19,7 +19,7 @@ tw_merge("px-2 py-1 bg-red hover:bg-dark-red", "p-3 bg-[#B91C1C]")
 ## Installation
 
 ```bash
-pip install git+https://github.com/promptsiren/tw-merge.git
+pip install git+https://github.com/banditburai/tw-merge.git
 ```
 
 ## Current Status
