@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tw_merge"
-version = "0.1.0"
-description = "A Python port of tailwind-merge v2.5.4"
+version = "0.1.1"
+description = "A Python port of tailwind-merge v3.0.2"
 readme = "README.md"
 authors = [
     {name = "promptsiren", email = "promptsiren@gmail.com"},
@@ -30,3 +30,8 @@ classifiers = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["tw_merge"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]

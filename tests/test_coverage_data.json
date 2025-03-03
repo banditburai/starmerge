@@ -1,0 +1,359 @@
+{
+  "file_coverage": [
+    {
+      "js_file": "arbitrary-properties.test.ts",
+      "py_file": "test_arbitrary_properties.py",
+      "js_tests": 4,
+      "py_tests": 4,
+      "matched_tests": 4,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "arbitrary-values.test.ts",
+      "py_file": "test_arbitrary_values.py",
+      "js_tests": 5,
+      "py_tests": 5,
+      "matched_tests": 5,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "arbitrary-variants.test.ts",
+      "py_file": "test_arbitrary_variants.py",
+      "js_tests": 7,
+      "py_tests": 7,
+      "matched_tests": 7,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "class-group-conflicts.test.ts",
+      "py_file": "test_class_group_conflicts.py",
+      "js_tests": 2,
+      "py_tests": 2,
+      "matched_tests": 2,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "class-map.test.ts",
+      "py_file": "test_class_map.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "class-utils.test.ts",
+      "py_file": "test_class_utils.py",
+      "error": "JavaScript file not found: js-source/tailwind-merge-v3/tests/class-utils.test.ts"
+    },
+    {
+      "js_file": "colors.test.ts",
+      "py_file": "test_colors.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "conflicts-across-class-groups.test.ts",
+      "py_file": "test_conflicts_across_class_groups.py",
+      "js_tests": 4,
+      "py_tests": 4,
+      "matched_tests": 4,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "content-utilities.test.ts",
+      "py_file": "test_content_utilities.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "core-concepts.test.ts",
+      "py_file": "test_core_concepts.py",
+      "error": "JavaScript file not found: js-source/tailwind-merge-v3/tests/core-concepts.test.ts"
+    },
+    {
+      "js_file": "create-tailwind-merge.test.ts",
+      "py_file": "test_create_tailwind_merge.py",
+      "js_tests": 2,
+      "py_tests": 2,
+      "matched_tests": 2,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "default-config.test.ts",
+      "py_file": "test_default_config.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "docs-examples.test.ts",
+      "py_file": "test_docs_examples.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "experimental-parse-class-name.test.ts",
+      "py_file": "test_experimental_parse_class_name.py",
+      "js_tests": 3,
+      "py_tests": 3,
+      "matched_tests": 3,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "extend-tailwind-merge.test.ts",
+      "py_file": "test_extend_tailwind_merge.py",
+      "js_tests": 4,
+      "py_tests": 4,
+      "matched_tests": 4,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "extending-theme.test.ts",
+      "py_file": "test_extending_theme.py",
+      "error": "JavaScript file not found: js-source/tailwind-merge-v3/tests/extending-theme.test.ts"
+    },
+    {
+      "js_file": "important-modifier.test.ts",
+      "py_file": "test_important_modifier.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "lazy-initialization.test.ts",
+      "py_file": "test_lazy_initialization.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "merge-classlist.test.ts",
+      "py_file": "test_merge_classlist.py",
+      "error": "JavaScript file not found: js-source/tailwind-merge-v3/tests/merge-classlist.test.ts"
+    },
+    {
+      "js_file": "merge-configs.test.ts",
+      "py_file": "test_merge_configs.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "modifiers.test.ts",
+      "py_file": "test_modifiers.py",
+      "js_tests": 4,
+      "py_tests": 4,
+      "matched_tests": 4,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "negative-values.test.ts",
+      "py_file": "test_negative_values.py",
+      "js_tests": 3,
+      "py_tests": 3,
+      "matched_tests": 3,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "non-conflicting-classes.test.ts",
+      "py_file": "test_non_conflicting_classes.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "non-tailwind-classes.test.ts",
+      "py_file": "test_non_tailwind_classes.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "per-side-border-colors.test.ts",
+      "py_file": "test_per_side_border_colors.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "prefixes.test.ts",
+      "py_file": "test_prefixes.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "pseudo-variants.test.ts",
+      "py_file": "test_pseudo_variants.py",
+      "js_tests": 2,
+      "py_tests": 2,
+      "matched_tests": 2,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "public-api.test.ts",
+      "py_file": "test_public_api.py",
+      "js_tests": 8,
+      "py_tests": 8,
+      "matched_tests": 8,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "standalone-classes.test.ts",
+      "py_file": "test_standalone_classes.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "tailwind-css-versions.test.ts",
+      "py_file": "test_tailwind_css_versions.py",
+      "js_tests": 3,
+      "py_tests": 3,
+      "matched_tests": 3,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "theme.test.ts",
+      "py_file": "test_theme.py",
+      "js_tests": 2,
+      "py_tests": 2,
+      "matched_tests": 2,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "tw-join.test.ts",
+      "py_file": "test_tw_join.py",
+      "js_tests": 5,
+      "py_tests": 5,
+      "matched_tests": 5,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "tw-merge.test.ts",
+      "py_file": "test_tw_merge.py",
+      "js_tests": 1,
+      "py_tests": 1,
+      "matched_tests": 1,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "type-generics.test.ts",
+      "py_file": "test_type_generics.py",
+      "js_tests": 3,
+      "py_tests": 3,
+      "matched_tests": 3,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": []
+    },
+    {
+      "js_file": "validators.test.ts",
+      "py_file": "test_validators.py",
+      "js_tests": 21,
+      "py_tests": 25,
+      "matched_tests": 21,
+      "coverage": 1.0,
+      "missing_tests": [],
+      "extra_tests": [
+        {
+          "function_name": "test_is_image",
+          "line": 190
+        },
+        {
+          "function_name": "test_is_length",
+          "line": 223
+        },
+        {
+          "function_name": "test_is_never",
+          "line": 286
+        },
+        {
+          "function_name": "test_is_shadow",
+          "line": 320
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "js_files": 31,
+    "py_files": 31,
+    "js_tests": 96,
+    "py_tests": 100,
+    "matched_tests": 96,
+    "overall_coverage": 1.0
+  }
+}

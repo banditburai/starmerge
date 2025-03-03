@@ -1,13 +1,13 @@
 # tw_merge
 
-A Python port of [tailwind-merge v2.5.4](https://github.com/dcastil/tailwind-merge/tree/v2.5.4)
+A Python port of [tailwind-merge v3.0.2](https://github.com/dcastil/tailwind-merge/tree/v3.0.2)
 
 ⚠️ **EXPERIMENTAL STATUS** ⚠️
 This is an experimental port of the JavaScript tailwind-merge library to Python. It may not work as expected and should not be used in production for anything except for funsies.
 
 ## Description
 
-`tw_merge` is a utility function to efficiently merge Tailwind CSS classes in Python without style conflicts. This is a direct port of the JavaScript library `tailwind-merge` version 2.5.4.
+`tw_merge` is a utility function to efficiently merge Tailwind CSS classes in Python without style conflicts. This is a direct port of the JavaScript library `tailwind-merge` version 3.0.2
 
 ```python
 from tw_merge import tw_merge
@@ -25,20 +25,15 @@ pip install git+https://github.com/banditburai/tw-merge.git
 ## Current Status
 
 - ✅ Basic class merging functionality
-- ✅ Support for Tailwind v3.x syntax
+- ✅ Support for Tailwind v4.x syntax
 - ⚠️ Not all edge cases may be handled
 - ⚠️ Performance may differ from the JS version
 
-## Future Plans
-
-- This package will likely need a major update when Tailwind v4 is released
-- Currently tracking version 2.5.4 of the JS library
-- May be completely rewritten
 
 ## Requirements
 
 - Python 3.11+
-- Works with Tailwind CSS v3.x
+- Works with Tailwind CSS v4.x
 
 ## Contributing
 
@@ -50,7 +45,7 @@ This is a port of [tailwind-merge](https://github.com/dcastil/tailwind-merge) by
 
 ## License
 
-This is a port of [tailwind-merge](https://github.com/dcastil/tailwind-merge/tree/v2.5.4) which is also licensed under the [MIT License](https://github.com/dcastil/tailwind-merge/blob/v2.5.4/LICENSE.md).
+This is a port of [tailwind-merge](https://github.com/dcastil/tailwind-merge/tree/v3.0.2) which is also licensed under the [MIT License](https://github.com/dcastil/tailwind-merge/blob/v3.0.2/LICENSE.md).
 
 ## Disclaimer
 

@@ -1,390 +1,192 @@
-from typing import TypeVar, List, Dict, Union, Optional, Protocol, Callable, Literal, TypedDict, Any
+"""
+Type definitions for tailwind-merge Python port.
 
-# Generic type variables
-GenericClassGroupIds = str
-GenericThemeGroupIds = str 
+This module contains type definitions used throughout the library,
+ported from the original TypeScript implementation.
+"""
 
-# Basic type definitions
-ClassValidator = Callable[[str], bool]
+from __future__ import annotations
+from typing import (
+    Any, 
+    Callable, 
+    Dict, 
+    List, 
+    Literal, 
+    NotRequired,
+    Optional, 
+    Protocol, 
+    TypeAlias,    
+    TypedDict, 
+    TypeVar, 
+    Union,
+    runtime_checkable
+)
+from dataclasses import dataclass
 
+# Import literal types from generated module
+# These will be populated by running scripts/update_types.py
+from .generated_types import DefaultThemeGroupIds, DefaultClassGroupIds
 
+# Type aliases for generic class and theme group IDs
+AnyClassGroupIds = str
+AnyThemeGroupIds = str
+
+# TypeVars for generic type parameters
+ClassGroupIds = TypeVar('ClassGroupIds', bound=str)
+ThemeGroupIds = TypeVar('ThemeGroupIds', bound=str)
+
+# Type alias for ClassValidator
+ClassValidator: TypeAlias = Callable[[str], bool]
+
+# Type alias for TailwindMerge function
+TailwindMerge: TypeAlias = Callable[[str], str]
+
+# Forward declarations using string literals for circular references
+ClassGroup: TypeAlias = List["ClassDefinition"]
+ClassObject: TypeAlias = Dict[str, "ClassGroup"]
+ThemeObject: TypeAlias = Dict[str, "ClassGroup"]
+
+# ThemeGetter class with isThemeGetter property
 class ThemeGetter(Protocol):
-    def __call__(self, theme: Dict[str, List[str]]) -> List[str]: ...
-    is_theme_getter: bool = True
+    """Theme getter function type."""
+    isThemeGetter: bool
+    def __call__(self, theme: ThemeObject) -> ClassGroup:
+        ...
 
-# Core type definitions
-ClassDefinition = Union[str, ClassValidator, ThemeGetter, Dict[str, List[Any]]]
-ClassGroup = List[ClassDefinition]
-ThemeObject = Dict[str, ClassGroup]
+# Now we can define ClassDefinition
+ClassDefinition: TypeAlias = Union[str, ClassValidator, ThemeGetter, ClassObject]
 
-# Config types
-class ConfigStatic(TypedDict, total=False):
-    cache_size: int
-    prefix: Optional[str]
-    separator: str
-    experimental_parse_class_name: Optional[Callable[[Dict[str, Any]], Any]]
+@dataclass
+class ParsedClassName:
+    """
+    Type of the result returned by the `parse_class_name` function.
+    
+    This is an experimental feature and may introduce breaking changes in any minor version update.
+    """
+    # Modifiers of the class in the order they appear in the class.
+    modifiers: List[str]
+    
+    # Whether the class has an `!important` modifier.
+    has_important_modifier: bool
+    
+    # Base class without preceding modifiers.
+    base_class_name: str
+    
+    # Index position of a possible postfix modifier in the class.
+    # If the class has no postfix modifier, this is None.
+    maybe_postfix_modifier_position: Optional[int] = None
+    
+    # Whether the class is external and merging logic should be skipped.
+    is_external: bool = False
+    
+    def __getitem__(self, key):
+        """Make the object subscriptable."""
+        if key == "modifiers":
+            return self.modifiers
+        elif key == "has_important_modifier":
+            return self.has_important_modifier
+        elif key == "base_class_name":
+            return self.base_class_name
+        elif key == "maybe_postfix_modifier_position":
+            return self.maybe_postfix_modifier_position
+        elif key == "is_external":
+            return self.is_external
+        else:
+            raise KeyError(f"Key '{key}' not found")
 
-class ConfigGroups(TypedDict, total=False):
-    theme: Dict[str, List[Any]]
-    class_groups: Dict[str, List[Any]]
-    conflicting_class_groups: Dict[str, List[str]]
-    conflicting_class_group_modifiers: Dict[str, List[str]]
-
-class Config(ConfigStatic, ConfigGroups):
-    pass
-
-# Internal types used by the implementation
-class ClassValidatorObject(TypedDict):
-    class_group_id: str
-    validator: ClassValidator
-
-class ClassPartObject(TypedDict):
-    next_part: Dict[str, 'ClassPartObject']
-    validators: List[ClassValidatorObject]
-    class_group_id: Optional[str]
 
 class ExperimentalParseClassNameParam(TypedDict):
-    """Type of param passed to the experimentalParseClassName function."""
+    """
+    Type of param passed to the `experimental_parse_class_name` function.
+    
+    This is an experimental feature and may introduce breaking changes in any minor version update.
+    """
     class_name: str
-    parse_class_name: Callable[[str], 'ExperimentalParsedClassName']
+    parse_class_name: Callable[[str], ParsedClassName]
 
-class ExperimentalParsedClassName(TypedDict):
-    """Result of parsing a class name through experimental parser."""
-    modifiers: List[str]
-    has_important_modifier: bool
-    base_class_name: str
-    maybe_postfix_modifier_position: Optional[int]
+
+class ConfigStaticPart(TypedDict):
+    """
+    The static part of the tailwind-merge configuration.
+    When merging multiple configurations, the properties of this interface are always overridden.
+    """
+    # Integer indicating size of LRU cache used for memoizing results.
+    # - Cache might be up to twice as big as `cacheSize`
+    # - No cache is used for values <= 0
+    cache_size: int
+    
+    # Prefix added to Tailwind-generated classes
+    prefix: NotRequired[str]
+    
+    # Allows to customize parsing of individual classes passed to `tw_merge`.
+    # All classes passed to `tw_merge` outside of cache hits are passed to this function
+    # before it is determined whether the class is a valid Tailwind CSS class.
+    experimental_parse_class_name: NotRequired[Callable[[ExperimentalParseClassNameParam], ParsedClassName]]
+    
+    # Custom separator for modifiers in Tailwind classes
+    separator: NotRequired[str]
+
+
+class ConfigGroupsPart(TypedDict):
+    """
+    The dynamic part of the tailwind-merge configuration.
+    When merging multiple configurations, the user can choose to either override or extend the properties.
+    """
+    # Theme scales used in classGroups.
+    theme: ThemeObject
+    
+    # Object with groups of classes.
+    class_groups: Dict[str, ClassGroup]
+    
+    # Conflicting classes across groups.
+    conflicting_class_groups: NotRequired[Dict[str, List[str]]]
+    
+    # Postfix modifiers conflicting with other class groups.
+    conflicting_class_group_modifiers: NotRequired[Dict[str, List[str]]]
+    
+    # Modifiers whose order among multiple modifiers should be preserved
+    # because their order changes which element gets targeted.
+    order_sensitive_modifiers: NotRequired[List[str]]
+
+
+class Config(ConfigStaticPart, ConfigGroupsPart):
+    """
+    Type the tailwind-merge configuration adheres to.
+    """
+    pass
+
+
+class PartialConfigGroupsPart(TypedDict, total=False):
+    """Partial version of ConfigGroupsPart for extensions."""
+    theme: ThemeObject
+    class_groups: Dict[str, ClassGroup]
+    conflicting_class_groups: Dict[str, List[str]]
+    conflicting_class_group_modifiers: Dict[str, List[str]]
+    order_sensitive_modifiers: List[str]
+
 
 class ConfigExtension(TypedDict, total=False):
-    """Extension config for merging with base config."""
-    cache_size: Optional[int]
-    prefix: Optional[str]
-    separator: Optional[str]
-    experimental_parse_class_name: Optional[Callable[[Dict[str, Any]], Any]]
-    override: Dict[str, Dict[str, Any]]
-    extend: Dict[str, Dict[str, Any]]
+    """
+    Type of the configuration object that can be passed to `extend_tailwind_merge`.
+    """
+    # Static configuration parts (directly override existing config)
+    cache_size: int
+    prefix: str
+    experimental_parse_class_name: Callable[[ExperimentalParseClassNameParam], ParsedClassName]
+    separator: str
+    
+    # Override parts of the configuration
+    override: PartialConfigGroupsPart
+    
+    # Extend parts of the configuration
+    extend: PartialConfigGroupsPart
 
-# Default theme group IDs (subset shown for brevity)
-DefaultThemeGroupIds = Literal[
-    'blur',
-    'borderColor',
-    'borderRadius',
-    'borderSpacing',
-    'borderWidth',
-    'brightness',
-    'colors',
-    'contrast',
-    'gap',
-    'gradientColorStopPositions',
-    'gradientColorStops',
-    'grayscale',
-    'hueRotate',
-    'inset',
-    'invert',
-    'margin',
-    'opacity',
-    'padding',
-    'saturate',
-    'scale',
-    'sepia',
-    'skew',
-    'space',
-    'spacing',
-    'translate'
-]
 
-DefaultClassGroupIds = Literal[
-    'accent',
-    'align-content',
-    'align-items',
-    'align-self',
-    'animate',
-    'appearance',
-    'aspect',
-    'auto-cols',
-    'auto-rows',
-    'backdrop-blur',
-    'backdrop-brightness',
-    'backdrop-contrast',
-    'backdrop-filter',
-    'backdrop-grayscale',
-    'backdrop-hue-rotate',
-    'backdrop-invert',
-    'backdrop-opacity',
-    'backdrop-saturate',
-    'backdrop-sepia',
-    'basis',
-    'bg-attachment',
-    'bg-blend',
-    'bg-clip',
-    'bg-color',
-    'bg-image',
-    'bg-opacity',
-    'bg-origin',
-    'bg-position',
-    'bg-repeat',
-    'bg-size',
-    'blur',
-    'border-collapse',
-    'border-color-b',
-    'border-color-e',
-    'border-color-l',
-    'border-color-r',
-    'border-color-s',
-    'border-color-t',
-    'border-color-x',
-    'border-color-y',
-    'border-color',
-    'border-opacity',
-    'border-spacing-x',
-    'border-spacing-y',
-    'border-spacing',
-    'border-style',
-    'border-w-b',
-    'border-w-e',
-    'border-w-l',
-    'border-w-r',
-    'border-w-s',
-    'border-w-t',
-    'border-w-x',
-    'border-w-y',
-    'border-w',
-    'bottom',
-    'box-decoration',
-    'box',
-    'break-after',
-    'break-before',
-    'break-inside',
-    'break',
-    'brightness',
-    'caption',
-    'caret-color',
-    'clear',
-    'col-end',
-    'col-start-end',
-    'col-start',
-    'columns',
-    'container',
-    'content',
-    'contrast',
-    'cursor',
-    'delay',
-    'display',
-    'divide-color',
-    'divide-opacity',
-    'divide-style',
-    'divide-x-reverse',
-    'divide-x',
-    'divide-y-reverse',
-    'divide-y',
-    'drop-shadow',
-    'duration',
-    'ease',
-    'end',
-    'fill',
-    'filter',
-    'flex-direction',
-    'flex-wrap',
-    'flex',
-    'float',
-    'font-family',
-    'font-size',
-    'font-smoothing',
-    'font-style',
-    'font-weight',
-    'forced-color-adjust',
-    'fvn-figure',
-    'fvn-fraction',
-    'fvn-normal',
-    'fvn-ordinal',
-    'fvn-slashed-zero',
-    'fvn-spacing',
-    'gap-x',
-    'gap-y',
-    'gap',
-    'gradient-from-pos',
-    'gradient-from',
-    'gradient-to-pos',
-    'gradient-to',
-    'gradient-via-pos',
-    'gradient-via',
-    'grayscale',
-    'grid-cols',
-    'grid-flow',
-    'grid-rows',
-    'grow',
-    'h',
-    'hue-rotate',
-    'hyphens',
-    'indent',
-    'inset-x',
-    'inset-y',
-    'inset',
-    'invert',
-    'isolation',
-    'justify-content',
-    'justify-items',
-    'justify-self',
-    'leading',
-    'left',
-    'line-clamp',
-    'list-image',
-    'list-style-position',
-    'list-style-type',
-    'm',
-    'mb',
-    'me',
-    'min-h',
-    'min-w',
-    'mix-blend',
-    'ml',
-    'mr',
-    'ms',
-    'mt',
-    'mx',
-    'my',
-    'object-fit',
-    'object-position',
-    'opacity',
-    'order',
-    'outline-color',
-    'outline-offset',
-    'outline-style',
-    'outline-w',
-    'overflow-x',
-    'overflow-y',
-    'overflow',
-    'overscroll-x',
-    'overscroll-y',
-    'overscroll',
-    'p',
-    'pb',
-    'pe',
-    'pl',
-    'place-content',
-    'place-items',
-    'place-self',
-    'placeholder-color',
-    'placeholder-opacity',
-    'pointer-events',
-    'position',
-    'pr',
-    'ps',
-    'pt',
-    'px',
-    'py',
-    'resize',
-    'right',
-    'ring-color',
-    'ring-offset-color',
-    'ring-offset-w',
-    'ring-opacity',
-    'ring-w-inset',
-    'ring-w',
-    'rotate',
-    'rounded-b',
-    'rounded-bl',
-    'rounded-br',
-    'rounded-e',
-    'rounded-ee',
-    'rounded-es',
-    'rounded-l',
-    'rounded-r',
-    'rounded-s',
-    'rounded-se',
-    'rounded-ss',
-    'rounded-t',
-    'rounded-tl',
-    'rounded-tr',
-    'rounded',
-    'row-end',
-    'row-start-end',
-    'row-start',
-    'saturate',
-    'scale-x',
-    'scale-y',
-    'scale',
-    'scroll-behavior',
-    'scroll-m',
-    'scroll-mb',
-    'scroll-me',
-    'scroll-ml',
-    'scroll-mr',
-    'scroll-ms',
-    'scroll-mt',
-    'scroll-mx',
-    'scroll-my',
-    'scroll-p',
-    'scroll-pb',
-    'scroll-pe',
-    'scroll-pl',
-    'scroll-pr',
-    'scroll-ps',
-    'scroll-pt',
-    'scroll-px',
-    'scroll-py',
-    'select',
-    'sepia',
-    'shadow-color',
-    'shadow',
-    'shrink',
-    'size',
-    'skew-x',
-    'skew-y',
-    'snap-align',
-    'snap-stop',
-    'snap-strictness',
-    'snap-type',
-    'space-x-reverse',
-    'space-x',
-    'space-y-reverse',
-    'space-y',
-    'sr',
-    'start',
-    'stroke-w',
-    'stroke',
-    'table-layout',
-    'text-alignment',
-    'text-color',
-    'text-decoration-color',
-    'text-decoration-style',
-    'text-decoration-thickness',
-    'text-decoration',
-    'text-opacity',
-    'text-overflow',
-    'text-transform',
-    'text-wrap',
-    'top',
-    'touch-pz',
-    'touch-x',
-    'touch-y',
-    'touch',
-    'tracking',
-    'transform-origin',
-    'transform',
-    'transition',
-    'translate-x',
-    'translate-y',
-    'underline-offset',
-    'vertical-align',
-    'visibility',
-    'w',
-    'whitespace',
-    'will-change',
-    'z'
-]
+# Type alias for a configuration that allows for any possible configuration
+AnyConfig: TypeAlias = Config
 
-GenericConfig = Dict[str, Any]
+# Define the ClassMap type alias
+ClassMap: TypeAlias = Dict[str, Any]
 
-__all__ = [
-    'ClassValidator',
-    'ClassDefinition',
-    'ClassGroup',
-    'ThemeObject',
-    'Config',
-    'ConfigExtension',  # Added this
-    'ClassValidatorObject',
-    'ClassPartObject',
-    'ExperimentalParseClassNameParam',
-    'ExperimentalParsedClassName'
-]
+# Define the ConflictingClassGroupIds type alias
+ConflictingClassGroupIds: TypeAlias = Dict[AnyClassGroupIds, List[AnyClassGroupIds]]

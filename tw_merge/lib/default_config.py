@@ -1,7 +1,19 @@
-from .from_theme import from_theme
-from .types import Config
-from .validators import (
+"""
+Default configuration for tailwind-merge.
+
+This file provides the default configuration used by the tailwind-merge function.
+It is converted from the TypeScript configuration file.
+"""
+
+from typing import Dict, List, Any, Union, Callable, Optional
+
+# Import necessary modules and functions
+from tw_merge.lib.from_theme import from_theme
+from tw_merge.lib.types import Config
+from tw_merge.lib.validators import (
+    # Validator functions - these will be properly imported
     is_any,
+    is_any_non_arbitrary,
     is_arbitrary_image,
     is_arbitrary_length,
     is_arbitrary_number,
@@ -9,60 +21,68 @@ from .validators import (
     is_arbitrary_shadow,
     is_arbitrary_size,
     is_arbitrary_value,
+    is_arbitrary_variable,
+    is_arbitrary_variable_family_name,
+    is_arbitrary_variable_image,
+    is_arbitrary_variable_length,
+    is_arbitrary_variable_position,
+    is_arbitrary_variable_shadow,
+    is_arbitrary_variable_size,
+    is_fraction,
     is_integer,
-    is_length,
     is_number,
     is_percent,
     is_tshirt_size,
 )
 
-def get_default_config() -> Config:
-    # Theme getters
-    colors = from_theme('colors')
-    spacing = from_theme('spacing')
-    blur = from_theme('blur')
-    brightness = from_theme('brightness')
-    border_color = from_theme('borderColor')
-    border_radius = from_theme('borderRadius')
-    border_spacing = from_theme('borderSpacing')
-    border_width = from_theme('borderWidth')
-    contrast = from_theme('contrast')
-    grayscale = from_theme('grayscale')
-    hue_rotate = from_theme('hueRotate')
-    invert = from_theme('invert')
-    gap = from_theme('gap')
-    gradient_color_stops = from_theme('gradientColorStops')
-    gradient_color_stop_positions = from_theme('gradientColorStopPositions')
-    inset = from_theme('inset')
-    margin = from_theme('margin')
-    opacity = from_theme('opacity')
-    padding = from_theme('padding')
-    saturate = from_theme('saturate')
-    scale = from_theme('scale')
-    sepia = from_theme('sepia')
-    skew = from_theme('skew')
-    space = from_theme('space')
-    translate = from_theme('translate')
 
-    def get_overscroll():
-        return ['auto', 'contain', 'none']
-
-    def get_overflow():
-        return ['auto', 'hidden', 'clip', 'visible', 'scroll']
-
-    def get_spacing_with_auto_and_arbitrary():
-        return ['auto', is_arbitrary_value, spacing]
-
-    def get_spacing_with_arbitrary():
-        return [is_arbitrary_value, spacing]
-
-    def get_length_with_empty_and_arbitrary():
-        return ['', is_length, is_arbitrary_length]
-
-    def get_number_with_auto_and_arbitrary():
-        return ['auto', is_number, is_arbitrary_value]
+def get_default_config(previous_config=None):
+    """
+    Get the default configuration for tailwind-merge.
     
-    def get_positions():
+    Args:
+        previous_config: Optional previous configuration which is ignored.
+                        This parameter exists to make the function compatible
+                        with function composition patterns like in the TypeScript version.
+    
+    Returns:
+        The default configuration object.
+    """
+    
+    # =========================================================================
+    # SECTION 1: Theme Getters
+    # =========================================================================
+    # These are functions that retrieve values from the theme configuration
+    theme_color = from_theme('color')
+    theme_font = from_theme('font')
+    theme_text = from_theme('text')
+    theme_font_weight = from_theme('font-weight')
+    theme_tracking = from_theme('tracking')
+    theme_leading = from_theme('leading')
+    theme_breakpoint = from_theme('breakpoint')
+    theme_container = from_theme('container')
+    theme_spacing = from_theme('spacing')
+    theme_radius = from_theme('radius')
+    theme_shadow = from_theme('shadow')
+    theme_inset_shadow = from_theme('inset-shadow')
+    theme_drop_shadow = from_theme('drop-shadow')
+    theme_blur = from_theme('blur')
+    theme_perspective = from_theme('perspective')
+    theme_aspect = from_theme('aspect')
+    theme_ease = from_theme('ease')
+    theme_animate = from_theme('animate')
+    
+    # =========================================================================
+    # SECTION 2: Scale Functions
+    # =========================================================================
+    # These functions define scales for various CSS properties
+    
+    def scale_break():
+        """Scale function for break properties."""
+        return ['auto', 'avoid', 'all', 'avoid-page', 'page', 'left', 'right', 'column']
+    
+    def scale_position():
+        """Scale function for position properties."""
         return [
             'bottom',
             'center',
@@ -74,11 +94,104 @@ def get_default_config() -> Config:
             'right-top',
             'top',
         ]
-
-    def get_line_styles():
-        return ['solid', 'dashed', 'dotted', 'double', 'none']
-
-    def get_blend_modes():
+    
+    def scale_overflow():
+        """Scale function for overflow properties."""
+        return ['auto', 'hidden', 'clip', 'visible', 'scroll']
+    
+    def scale_overscroll():
+        """Scale function for overscroll properties."""
+        return ['auto', 'contain', 'none']
+    
+    def scale_unambiguous_spacing():
+        """Scale function for unambiguous spacing properties."""
+        return [is_arbitrary_variable, is_arbitrary_value, 'px', is_number, theme_spacing]
+    
+    def scale_inset():
+        """Scale function for inset properties."""
+        return [is_fraction, 'full', 'auto', *scale_unambiguous_spacing()]
+    
+    def scale_grid_template_cols_rows():
+        """Scale function for grid-template-columns and grid-template-rows properties."""
+        return [is_integer, 'none', 'subgrid', is_arbitrary_variable, is_arbitrary_value]
+    
+    def scale_grid_col_row_start_and_end():
+        """Scale function for grid column/row start/end properties with span."""
+        return [
+            'auto',
+            {'span': ['full', is_integer, is_arbitrary_variable, is_arbitrary_value]},
+            is_arbitrary_variable,
+            is_arbitrary_value,
+        ]
+    
+    def scale_grid_col_row_start_or_end():
+        """Scale function for grid column/row start or end properties."""
+        return [is_integer, 'auto', is_arbitrary_variable, is_arbitrary_value]
+    
+    def scale_grid_auto_cols_rows():
+        """Scale function for grid-auto-columns and grid-auto-rows properties."""
+        return ['auto', 'min', 'max', 'fr', is_arbitrary_variable, is_arbitrary_value]
+    
+    def scale_align_primary_axis():
+        """Scale function for primary axis alignment properties."""
+        return ['start', 'end', 'center', 'between', 'around', 'evenly', 'stretch', 'baseline']
+    
+    def scale_align_secondary_axis():
+        """Scale function for secondary axis alignment properties."""
+        return ['start', 'end', 'center', 'stretch']
+    
+    def scale_margin():
+        """Scale function for margin properties."""
+        return ['auto', *scale_unambiguous_spacing()]
+    
+    def scale_sizing():
+        """Scale function for sizing properties."""
+        return [
+            is_fraction,
+            is_number,
+            'auto',
+            'full',
+            'dvw',
+            'dvh',
+            'lvw',
+            'lvh',
+            'svw',
+            'svh',
+            'min',
+            'max',
+            'fit',
+            *scale_unambiguous_spacing(),
+        ]
+    
+    def scale_color():
+        """Scale function for color properties."""
+        return [theme_color, is_arbitrary_variable, is_arbitrary_value]
+    
+    def scale_gradient_stop_position():
+        """Scale function for gradient stop position properties."""
+        return [is_percent, is_arbitrary_length]
+    
+    def scale_radius():
+        """Scale function for border radius properties."""
+        return [
+            '',
+            'none',
+            'full',
+            theme_radius,
+            is_arbitrary_variable,
+            is_arbitrary_value,
+        ]
+    
+    def scale_border_width():
+        """Scale function for border width properties."""
+        return ['', is_number, is_arbitrary_variable_length, is_arbitrary_length]
+    
+    def scale_line_style():
+        """Scale function for line style properties."""
+        return ['solid', 'dashed', 'dotted', 'double']
+    
+    def scale_blend_mode():
+        """Scale function for blend mode properties."""
         return [
             'normal',
             'multiply',
@@ -97,59 +210,122 @@ def get_default_config() -> Config:
             'color',
             'luminosity',
         ]
-
-    def get_align():
-        return ['start', 'end', 'center', 'between', 'around', 'evenly', 'stretch']
-
-    def get_zero_and_empty():
-        return ['', '0', is_arbitrary_value]
-
-    def get_breaks():
-        return ['auto', 'avoid', 'all', 'avoid-page', 'page', 'left', 'right', 'column']
-
-    def get_number_and_arbitrary():
-        return [is_number, is_arbitrary_value]
-
+    
+    def scale_blur():
+        """Scale function for blur properties."""
+        return [
+            '',
+            'none',
+            theme_blur,
+            is_arbitrary_variable,
+            is_arbitrary_value,
+        ]
+    
+    def scale_origin():
+        """Scale function for transform origin properties."""
+        return [
+            'center',
+            'top',
+            'top-right',
+            'right',
+            'bottom-right',
+            'bottom',
+            'bottom-left',
+            'left',
+            'top-left',
+            is_arbitrary_variable,
+            is_arbitrary_value,
+        ]
+    
+    def scale_rotate():
+        """Scale function for rotation properties."""
+        return ['none', is_number, is_arbitrary_variable, is_arbitrary_value]
+    
+    def scale_scale():
+        """Scale function for scaling properties."""
+        return ['none', is_number, is_arbitrary_variable, is_arbitrary_value]
+    
+    def scale_skew():
+        """Scale function for skew properties."""
+        return [is_number, is_arbitrary_variable, is_arbitrary_value]
+    
+    def scale_translate():
+        """Scale function for translate properties."""
+        return [is_fraction, 'full', *scale_unambiguous_spacing()]
+    
+    # =========================================================================
+    # SECTION 3: Return Configuration Object
+    # =========================================================================
+    # This returns the complete configuration object
+    
     return {
         'cache_size': 500,
-        'separator': ':',
+        
+        # Theme configuration
         'theme': {
-            'colors': [is_any],
-            'spacing': [is_length, is_arbitrary_length],
-            'blur': ['none', '', is_tshirt_size, is_arbitrary_value],
-            'brightness': get_number_and_arbitrary(),
-            'borderColor': [colors],
-            'borderRadius': ['none', '', 'full', is_tshirt_size, is_arbitrary_value],
-            'borderSpacing': get_spacing_with_arbitrary(),
-            'borderWidth': get_length_with_empty_and_arbitrary(),
-            'contrast': get_number_and_arbitrary(),
-            'grayscale': get_zero_and_empty(),
-            'hueRotate': get_number_and_arbitrary(),
-            'invert': get_zero_and_empty(),
-            'gap': get_spacing_with_arbitrary(),
-            'gradientColorStops': [colors],
-            'gradientColorStopPositions': [is_percent, is_arbitrary_length],
-            'inset': get_spacing_with_auto_and_arbitrary(),
-            'margin': get_spacing_with_auto_and_arbitrary(),
-            'opacity': get_number_and_arbitrary(),
-            'padding': get_spacing_with_arbitrary(),
-            'saturate': get_number_and_arbitrary(),
-            'scale': get_number_and_arbitrary(),
-            'sepia': get_zero_and_empty(),
-            'skew': get_number_and_arbitrary(),
-            'space': get_spacing_with_arbitrary(),
-            'translate': get_spacing_with_arbitrary(),
+            'animate': ['spin', 'ping', 'pulse', 'bounce'],
+            'aspect': ['video'],
+            'blur': [is_tshirt_size],
+            'breakpoint': [is_tshirt_size],
+            'color': [is_any],
+            'container': [is_tshirt_size],
+            'drop-shadow': [is_tshirt_size],
+            'ease': ['in', 'out', 'in-out'],
+            'font': [is_any_non_arbitrary],
+            'font-weight': [
+                'thin',
+                'extralight',
+                'light',
+                'normal',
+                'medium',
+                'semibold',
+                'bold',
+                'extrabold',
+                'black'
+            ],
+            'inset-shadow': [is_tshirt_size],
+            'leading': ['none', 'tight', 'snug', 'normal', 'relaxed', 'loose'],
+            'perspective': ['dramatic', 'near', 'normal', 'midrange', 'distant', 'none'],
+            'radius': [is_tshirt_size],
+            'shadow': [
+                {
+                    'shadow': [
+                        '',
+                        'none',
+                        theme_shadow,
+                        is_arbitrary_variable_shadow,
+                        is_arbitrary_shadow,
+                    ],
+                },
+            ],
+            'spacing': ['px', is_number],
+            'text': [is_tshirt_size],
+            'tracking': ['tighter', 'tight', 'normal', 'wide', 'wider', 'widest'],
         },
+        
+        # Class groups configuration
         'class_groups': {
-            # Layout
-            'aspect': [{'aspect': ['auto', 'square', 'video', is_arbitrary_value]}],
+            'aspect': [
+                {
+                    'aspect': [
+                        'auto',
+                        'square',
+                        is_fraction,
+                        is_arbitrary_value,
+                        is_arbitrary_variable,
+                        theme_aspect,
+                    ],
+                },
+            ],
             'container': ['container'],
-            'columns': [{'columns': [is_tshirt_size]}],
-            'break-after': [{'break-after': get_breaks()}],
-            'break-before': [{'break-before': get_breaks()}],
-            'break-inside': [{'break-inside': ['auto', 'avoid', 'avoid-page', 'avoid-column']}],
-            'box-decoration': [{'box-decoration': ['slice', 'clone']}],
-            'box': [{'box': ['border', 'content']}],
+            'columns': [
+                { 'columns': [is_number, is_arbitrary_value, is_arbitrary_variable, theme_container] },
+            ],
+            'break-after': [{ 'break-after': scale_break() }],
+            'break-before': [{ 'break-before': scale_break() }],
+            'break-inside': [{ 'break-inside': ['auto', 'avoid', 'avoid-page', 'avoid-column'] }],
+            'box-decoration': [{ 'box-decoration': ['slice', 'clone'] }],
+            'box': [{ 'box': ['border', 'content'] }],
             'display': [
                 'block',
                 'inline-block',
@@ -173,488 +349,571 @@ def get_default_config() -> Config:
                 'list-item',
                 'hidden',
             ],
-            'float': [{'float': ['right', 'left', 'none', 'start', 'end']}],
-            'clear': [{'clear': ['left', 'right', 'both', 'none', 'start', 'end']}],
+            'sr': ['sr-only', 'not-sr-only'],
+            'float': [{ 'float': ['right', 'left', 'none', 'start', 'end'] }],
+            'clear': [{ 'clear': ['left', 'right', 'both', 'none', 'start', 'end'] }],
             'isolation': ['isolate', 'isolation-auto'],
-            'object-fit': [{'object': ['contain', 'cover', 'fill', 'none', 'scale-down']}],
-            'object-position': [{'object': [*get_positions(), is_arbitrary_value]}],
-            'overflow': [{'overflow': get_overflow()}],
-            'overflow-x': [{'overflow-x': get_overflow()}],
-            'overflow-y': [{'overflow-y': get_overflow()}],
-            'overscroll': [{'overscroll': get_overscroll()}],
-            'overscroll-x': [{'overscroll-x': get_overscroll()}],
-            'overscroll-y': [{'overscroll-y': get_overscroll()}],
+            'object-fit': [{ 'object': ['contain', 'cover', 'fill', 'none', 'scale-down'] }],
+            'object-position': [
+                { 'object': [*scale_position(), is_arbitrary_value, is_arbitrary_variable] },
+            ],
+            'overflow': [{ 'overflow': scale_overflow() }],
+            'overflow-x': [{ 'overflow-x': scale_overflow() }],
+            'overflow-y': [{ 'overflow-y': scale_overflow() }],
+            'overscroll': [{ 'overscroll': scale_overscroll() }],
+            'overscroll-x': [{ 'overscroll-x': scale_overscroll() }],
+            'overscroll-y': [{ 'overscroll-y': scale_overscroll() }],
             'position': ['static', 'fixed', 'absolute', 'relative', 'sticky'],
-            'inset': [{'inset': [inset]}],
-            'inset-x': [{'inset-x': [inset]}],
-            'inset-y': [{'inset-y': [inset]}],
-            'start': [{'start': [inset]}],
-            'end': [{'end': [inset]}],
-            'top': [{'top': [inset]}],
-            'right': [{'right': [inset]}],
-            'bottom': [{'bottom': [inset]}],
-            'left': [{'left': [inset]}],
+            'inset': [{ 'inset': scale_inset() }],
+            'inset-x': [{ 'inset-x': scale_inset() }],
+            'inset-y': [{ 'inset-y': scale_inset() }],
+            'start': [{ 'start': scale_inset() }],
+            'end': [{ 'end': scale_inset() }],
+            'top': [{ 'top': scale_inset() }],
+            'right': [{ 'right': scale_inset() }],
+            'bottom': [{ 'bottom': scale_inset() }],
+            'left': [{ 'left': scale_inset() }],
             'visibility': ['visible', 'invisible', 'collapse'],
-            'z': [{'z': ['auto', is_integer, is_arbitrary_value]}],
-
-            # Flexbox and Grid
-            'basis': [{'basis': get_spacing_with_auto_and_arbitrary()}],
-            'flex-direction': [{'flex': ['row', 'row-reverse', 'col', 'col-reverse']}],
-            'flex-wrap': [{'flex': ['wrap', 'wrap-reverse', 'nowrap']}],
-            'flex': [{'flex': ['1', 'auto', 'initial', 'none', is_arbitrary_value]}],
-            'grow': [{'grow': get_zero_and_empty()}],
-            'shrink': [{'shrink': get_zero_and_empty()}],
-            'order': [{'order': ['first', 'last', 'none', is_integer, is_arbitrary_value]}],
-            'grid-cols': [{'grid-cols': [is_any]}],
-            'col-start-end': [{
-                'col': [
-                    'auto',
-                    {'span': ['full', is_integer, is_arbitrary_value]},
-                    is_arbitrary_value,
-                ],
-            }],
-            'col-start': [{'col-start': get_number_with_auto_and_arbitrary()}],
-            'col-end': [{'col-end': get_number_with_auto_and_arbitrary()}],
-            'grid-rows': [{'grid-rows': [is_any]}],
-            'row-start-end': [{'row': ['auto', {'span': [is_integer, is_arbitrary_value]}, is_arbitrary_value]}],
-            'row-start': [{'row-start': get_number_with_auto_and_arbitrary()}],
-            'row-end': [{'row-end': get_number_with_auto_and_arbitrary()}],
-            'grid-flow': [{'grid-flow': ['row', 'col', 'dense', 'row-dense', 'col-dense']}],
-            'auto-cols': [{'auto-cols': ['auto', 'min', 'max', 'fr', is_arbitrary_value]}],
-            'auto-rows': [{'auto-rows': ['auto', 'min', 'max', 'fr', is_arbitrary_value]}],
-            'gap': [{'gap': [gap]}],
-            'gap-x': [{'gap-x': [gap]}],
-            'gap-y': [{'gap-y': [gap]}],
-            'justify-content': [{'justify': ['normal', *get_align()]}],
-            'justify-items': [{'justify-items': ['start', 'end', 'center', 'stretch']}],
-            'justify-self': [{'justify-self': ['auto', 'start', 'end', 'center', 'stretch']}],
-            'align-content': [{'content': ['normal', *get_align(), 'baseline']}],
-            'align-items': [{'items': ['start', 'end', 'center', 'baseline', 'stretch']}],
-            'align-self': [{'self': ['auto', 'start', 'end', 'center', 'stretch', 'baseline']}],
-            'place-content': [{'place-content': [*get_align(), 'baseline']}],
-            'place-items': [{'place-items': ['start', 'end', 'center', 'baseline', 'stretch']}],
-            'place-self': [{'place-self': ['auto', 'start', 'end', 'center', 'stretch']}],
-
-            # Spacing
-            'p': [{'p': [padding]}],
-            'px': [{'px': [padding]}],
-            'py': [{'py': [padding]}],
-            'ps': [{'ps': [padding]}],
-            'pe': [{'pe': [padding]}],
-            'pt': [{'pt': [padding]}],
-            'pr': [{'pr': [padding]}],
-            'pb': [{'pb': [padding]}],
-            'pl': [{'pl': [padding]}],
-            'm': [{'m': [margin]}],
-            'mx': [{'mx': [margin]}],
-            'my': [{'my': [margin]}],
-            'ms': [{'ms': [margin]}],
-            'me': [{'me': [margin]}],
-            'mt': [{'mt': [margin]}],
-            'mr': [{'mr': [margin]}],
-            'mb': [{'mb': [margin]}],
-            'ml': [{'ml': [margin]}],
-            'space-x': [{'space-x': [space]}],
+            'z': [{ 'z': [is_integer, 'auto', is_arbitrary_variable, is_arbitrary_value] }],
+            'basis': [
+                {
+                    'basis': [
+                        is_fraction,
+                        'full',
+                        'auto',
+                        theme_container,
+                        *scale_unambiguous_spacing(),
+                    ],
+                },
+            ],
+            'flex-direction': [{ 'flex': ['row', 'row-reverse', 'col', 'col-reverse'] }],
+            'flex-wrap': [{ 'flex': ['nowrap', 'wrap', 'wrap-reverse'] }],
+            'flex': [{ 'flex': [is_number, is_fraction, 'auto', 'initial', 'none', is_arbitrary_value] }],
+            'grow': [{ 'grow': ['', is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'shrink': [{ 'shrink': ['', is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'order': [
+                {
+                    'order': [
+                        is_integer,
+                        'first',
+                        'last',
+                        'none',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'grid-cols': [{ 'grid-cols': scale_grid_template_cols_rows() }],
+            'col-start-end': [{ 'col': scale_grid_col_row_start_and_end() }],
+            'col-start': [{ 'col-start': scale_grid_col_row_start_or_end() }],
+            'col-end': [{ 'col-end': scale_grid_col_row_start_or_end() }],
+            'grid-rows': [{ 'grid-rows': scale_grid_template_cols_rows() }],
+            'row-start-end': [{ 'row': scale_grid_col_row_start_and_end() }],
+            'row-start': [{ 'row-start': scale_grid_col_row_start_or_end() }],
+            'row-end': [{ 'row-end': scale_grid_col_row_start_or_end() }],
+            'grid-flow': [{ 'grid-flow': ['row', 'col', 'dense', 'row-dense', 'col-dense'] }],
+            'auto-cols': [{ 'auto-cols': scale_grid_auto_cols_rows() }],
+            'auto-rows': [{ 'auto-rows': scale_grid_auto_cols_rows() }],
+            'gap': [{ 'gap': scale_unambiguous_spacing() }],
+            'gap-x': [{ 'gap-x': scale_unambiguous_spacing() }],
+            'gap-y': [{ 'gap-y': scale_unambiguous_spacing() }],
+            'justify-content': [{ 'justify': [*scale_align_primary_axis(), 'normal'] }],
+            'justify-items': [{ 'justify-items': [*scale_align_secondary_axis(), 'normal'] }],
+            'justify-self': [{ 'justify-self': ['auto', *scale_align_secondary_axis()] }],
+            'align-content': [{ 'content': ['normal', *scale_align_primary_axis()] }],
+            'align-items': [{ 'items': [*scale_align_secondary_axis(), 'baseline'] }],
+            'align-self': [{ 'self': ['auto', *scale_align_secondary_axis(), 'baseline'] }],
+            'place-content': [{ 'place-content': scale_align_primary_axis() }],
+            'place-items': [{ 'place-items': [*scale_align_secondary_axis(), 'baseline'] }],
+            'place-self': [{ 'place-self': ['auto', *scale_align_secondary_axis()] }],
+            'p': [{ 'p': scale_unambiguous_spacing() }],
+            'px': [{ 'px': scale_unambiguous_spacing() }],
+            'py': [{ 'py': scale_unambiguous_spacing() }],
+            'ps': [{ 'ps': scale_unambiguous_spacing() }],
+            'pe': [{ 'pe': scale_unambiguous_spacing() }],
+            'pt': [{ 'pt': scale_unambiguous_spacing() }],
+            'pr': [{ 'pr': scale_unambiguous_spacing() }],
+            'pb': [{ 'pb': scale_unambiguous_spacing() }],
+            'pl': [{ 'pl': scale_unambiguous_spacing() }],
+            'm': [{ 'm': scale_margin() }],
+            'mx': [{ 'mx': scale_margin() }],
+            'my': [{ 'my': scale_margin() }],
+            'ms': [{ 'ms': scale_margin() }],
+            'me': [{ 'me': scale_margin() }],
+            'mt': [{ 'mt': scale_margin() }],
+            'mr': [{ 'mr': scale_margin() }],
+            'mb': [{ 'mb': scale_margin() }],
+            'ml': [{ 'ml': scale_margin() }],
+            'space-x': [{ 'space-x': scale_unambiguous_spacing() }],
             'space-x-reverse': ['space-x-reverse'],
-            'space-y': [{'space-y': [space]}],
+            'space-y': [{ 'space-y': scale_unambiguous_spacing() }],
             'space-y-reverse': ['space-y-reverse'],
-
-            # Sizing
-            'w': [{
-                'w': [
-                    'auto',
-                    'min',
-                    'max',
-                    'fit',
-                    'svw',
-                    'lvw',
-                    'dvw',
-                    is_arbitrary_value,
-                    spacing,
-                ],
-            }],
-            'min-w': [{'min-w': [is_arbitrary_value, spacing, 'min', 'max', 'fit']}],
-            'max-w': [{
-                'max-w': [
-                    is_arbitrary_value,
-                    spacing,
-                    'none',
-                    'full',
-                    'min',
-                    'max',
-                    'fit',
-                    'prose',
-                    {'screen': [is_tshirt_size]},
-                    is_tshirt_size,
-                ],
-            }],
-            'h': [{
-                'h': [
-                    is_arbitrary_value,
-                    spacing,
-                    'auto',
-                    'min',
-                    'max',
-                    'fit',
-                    'svh',
-                    'lvh',
-                    'dvh',
-                ],
-            }],
-            'min-h': [{
-                'min-h': [
-                    is_arbitrary_value,
-                    spacing,
-                    'min',
-                    'max',
-                    'fit',
-                    'svh',
-                    'lvh',
-                    'dvh'
-                ],
-            }],
-            'max-h': [{
-                'max-h': [
-                    is_arbitrary_value,
-                    spacing,
-                    'min',
-                    'max',
-                    'fit',
-                    'svh',
-                    'lvh',
-                    'dvh'
-                ],
-            }],
-            'size': [{'size': [is_arbitrary_value, spacing, 'auto', 'min', 'max', 'fit']}],
-
-            # Typography
-            'font-size': [{'text': ['base', is_tshirt_size, is_arbitrary_length]}],
+            'size': [{ 'size': scale_sizing() }],
+            'w': [{ 'w': [theme_container, 'screen', *scale_sizing()] }],
+            'min-w': [
+                {
+                    'min-w': [
+                        theme_container,
+                        'screen',
+                        'none',
+                        *scale_sizing(),
+                    ],
+                },
+            ],
+            'max-w': [
+                {
+                    'max-w': [
+                        theme_container,
+                        'screen',
+                        'none',
+                        'prose',
+                        { 'screen': [theme_breakpoint] },
+                        *scale_sizing(),
+                    ],
+                },
+            ],
+            'h': [{ 'h': ['screen', *scale_sizing()] }],
+            'min-h': [{ 'min-h': ['screen', 'none', *scale_sizing()] }],
+            'max-h': [{ 'max-h': ['screen', *scale_sizing()] }],
+            'font-size': [
+                { 'text': ['base', theme_text, is_arbitrary_variable_length, is_arbitrary_length] },
+            ],
             'font-smoothing': ['antialiased', 'subpixel-antialiased'],
             'font-style': ['italic', 'not-italic'],
-            'font-weight': [{
-                'font': [
-                    'thin',
-                    'extralight',
-                    'light',
-                    'normal',
-                    'medium',
-                    'semibold',
-                    'bold',
-                    'extrabold',
-                    'black',
-                    is_arbitrary_number,
-                ],
-            }],
-            'font-family': [{'font': [is_any]}],
+            'font-weight': [{ 'font': [theme_font_weight, is_arbitrary_variable, is_arbitrary_number] }],
+            'font-stretch': [
+                {
+                    'font-stretch': [
+                        'ultra-condensed',
+                        'extra-condensed',
+                        'condensed',
+                        'semi-condensed',
+                        'normal',
+                        'semi-expanded',
+                        'expanded',
+                        'extra-expanded',
+                        'ultra-expanded',
+                        is_percent,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'font-family': [{ 'font': [is_arbitrary_variable_family_name, is_arbitrary_value, theme_font] }],
             'fvn-normal': ['normal-nums'],
             'fvn-ordinal': ['ordinal'],
             'fvn-slashed-zero': ['slashed-zero'],
             'fvn-figure': ['lining-nums', 'oldstyle-nums'],
             'fvn-spacing': ['proportional-nums', 'tabular-nums'],
-            'fvn-fraction': ['diagonal-fractions', 'stacked-fractons'],
-            'tracking': [{
-                'tracking': [
-                    'tighter',
-                    'tight',
-                    'normal',
-                    'wide',
-                    'wider',
-                    'widest',
-                    is_arbitrary_value,
-                ],
-            }],
-            'line-clamp': [{'line-clamp': ['none', is_number, is_arbitrary_number]}],
-            'leading': [{
-                'leading': [
-                    'none',
-                    'tight',
-                    'snug',
-                    'normal',
-                    'relaxed',
-                    'loose',
-                    is_length,
-                    is_arbitrary_value,
-                ],
-            }],
-            'list-image': [{'list-image': ['none', is_arbitrary_value]}],
-            'list-style-type': [{'list': ['none', 'disc', 'decimal', is_arbitrary_value]}],
-            'list-style-position': [{'list': ['inside', 'outside']}],
-            'placeholder-color': [{'placeholder': [colors]}],
-            'placeholder-opacity': [{'placeholder-opacity': [opacity]}],
-            'text-alignment': [{'text': ['left', 'center', 'right', 'justify', 'start', 'end']}],
-            'text-color': [{'text': [colors]}],
-            'text-opacity': [{'text-opacity': [opacity]}],
+            'fvn-fraction': ['diagonal-fractions', 'stacked-fractions'],
+            'tracking': [{ 'tracking': [theme_tracking, is_arbitrary_variable, is_arbitrary_value] }],
+            'line-clamp': [
+                { 'line-clamp': [is_number, 'none', is_arbitrary_variable, is_arbitrary_number] },
+            ],
+            'leading': [
+                {
+                    'leading': [
+                        theme_leading,
+                        *scale_unambiguous_spacing(),
+                    ],
+                },
+            ],
+            'list-image': [{ 'list-image': ['none', is_arbitrary_variable, is_arbitrary_value] }],
+            'list-style-position': [{ 'list': ['inside', 'outside'] }],
+            'list-style-type': [
+                { 'list': ['disc', 'decimal', 'none', is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'text-alignment': [{ 'text': ['left', 'center', 'right', 'justify', 'start', 'end'] }],
+            'placeholder-color': [{ 'placeholder': scale_color() }],
+            'text-color': [{ 'text': scale_color() }],
             'text-decoration': ['underline', 'overline', 'line-through', 'no-underline'],
-            'text-decoration-style': [{'decoration': [*get_line_styles(), 'wavy']}],
-            'text-decoration-thickness': [{'decoration': ['auto', 'from-font', is_length, is_arbitrary_length]}],
-            'underline-offset': [{'underline-offset': ['auto', is_length, is_arbitrary_value]}],
-            'text-decoration-color': [{'decoration': [colors]}],
+            'text-decoration-style': [{ 'decoration': [*scale_line_style(), 'wavy'] }],
+            'text-decoration-thickness': [
+                {
+                    'decoration': [
+                        is_number,
+                        'from-font',
+                        'auto',
+                        is_arbitrary_variable,
+                        is_arbitrary_length,
+                    ],
+                },
+            ],
+            'text-decoration-color': [{ 'decoration': scale_color() }],
+            'underline-offset': [
+                { 'underline-offset': [is_number, 'auto', is_arbitrary_variable, is_arbitrary_value] },
+            ],
             'text-transform': ['uppercase', 'lowercase', 'capitalize', 'normal-case'],
             'text-overflow': ['truncate', 'text-ellipsis', 'text-clip'],
-            'text-wrap': [{'text': ['wrap', 'nowrap', 'balance', 'pretty']}],
-            'indent': [{'indent': get_spacing_with_arbitrary()}],
-            'vertical-align': [{
-                'align': [
-                    'baseline',
-                    'top',
-                    'middle',
-                    'bottom',
-                    'text-top',
-                    'text-bottom',
-                    'sub',
-                    'super',
-                    is_arbitrary_value,
-                ],
-            }],
-            'whitespace': [{'whitespace': ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap', 'break-spaces']}],
-            'break': [{'break': ['normal', 'words', 'all', 'keep']}],
-            'hyphens': [{'hyphens': ['none', 'manual', 'auto']}],
-            'content': [{'content': ['none', is_arbitrary_value]}],
-
-            # Backgrounds
-            'bg-attachment': [{'bg': ['fixed', 'local', 'scroll']}],
-            'bg-clip': [{'bg-clip': ['border', 'padding', 'content', 'text']}],
-            'bg-opacity': [{'bg-opacity': [opacity]}],
-            'bg-origin': [{'bg-origin': ['border', 'padding', 'content']}],
-            'bg-position': [{'bg': [*get_positions(), is_arbitrary_position]}],
-            'bg-repeat': [{'bg': ['no-repeat', {'repeat': ['', 'x', 'y', 'round', 'space']}]}],
-            'bg-size': [{'bg': ['auto', 'cover', 'contain', is_arbitrary_size]}],
-            'bg-image': [{
-                'bg': [
-                    'none',
-                    {'gradient-to': ['t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl']},
-                    is_arbitrary_image,
-                ],
-            }],
-            'bg-color': [{'bg': [colors]}],
-            'gradient-from-pos': [{'from': [gradient_color_stop_positions]}],
-            'gradient-via-pos': [{'via': [gradient_color_stop_positions]}],
-            'gradient-to-pos': [{'to': [gradient_color_stop_positions]}],
-            'gradient-from': [{'from': [gradient_color_stops]}],
-            'gradient-via': [{'via': [gradient_color_stops]}],
-            'gradient-to': [{'to': [gradient_color_stops]}],
-
-            # Borders
-            'rounded': [{'rounded': [border_radius]}],
-            'rounded-s': [{'rounded-s': [border_radius]}],
-            'rounded-e': [{'rounded-e': [border_radius]}],
-            'rounded-t': [{'rounded-t': [border_radius]}],
-            'rounded-r': [{'rounded-r': [border_radius]}],
-            'rounded-b': [{'rounded-b': [border_radius]}],
-            'rounded-l': [{'rounded-l': [border_radius]}],
-            'rounded-ss': [{'rounded-ss': [border_radius]}],
-            'rounded-se': [{'rounded-se': [border_radius]}],
-            'rounded-ee': [{'rounded-ee': [border_radius]}],
-            'rounded-es': [{'rounded-es': [border_radius]}],
-            'rounded-tl': [{'rounded-tl': [border_radius]}],
-            'rounded-tr': [{'rounded-tr': [border_radius]}],
-            'rounded-br': [{'rounded-br': [border_radius]}],
-            'rounded-bl': [{'rounded-bl': [border_radius]}],
-            'border-w': [{'border': [border_width]}],
-            'border-w-x': [{'border-x': [border_width]}],
-            'border-w-y': [{'border-y': [border_width]}],
-            'border-w-s': [{'border-s': [border_width]}],
-            'border-w-e': [{'border-e': [border_width]}],
-            'border-w-t': [{'border-t': [border_width]}],
-            'border-w-r': [{'border-r': [border_width]}],
-            'border-w-b': [{'border-b': [border_width]}],
-            'border-w-l': [{'border-l': [border_width]}],
-            'border-opacity': [{'border-opacity': [opacity]}],
-            'border-style': [{'border': [*get_line_styles(), 'hidden']}],
-            'divide-x': [{'divide-x': [border_width]}],
+            'text-wrap': [{ 'text': ['wrap', 'nowrap', 'balance', 'pretty'] }],
+            'indent': [{ 'indent': scale_unambiguous_spacing() }],
+            'vertical-align': [
+                {
+                    'align': [
+                        'baseline',
+                        'top',
+                        'middle',
+                        'bottom',
+                        'text-top',
+                        'text-bottom',
+                        'sub',
+                        'super',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'whitespace': [
+                { 'whitespace': ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap', 'break-spaces'] },
+            ],
+            'break': [{ 'break': ['normal', 'words', 'all', 'keep'] }],
+            'hyphens': [{ 'hyphens': ['none', 'manual', 'auto'] }],
+            'content': [{ 'content': ['none', is_arbitrary_variable, is_arbitrary_value] }],
+            'bg-attachment': [{ 'bg': ['fixed', 'local', 'scroll'] }],
+            'bg-clip': [{ 'bg-clip': ['border', 'padding', 'content', 'text'] }],
+            'bg-origin': [{ 'bg-origin': ['border', 'padding', 'content'] }],
+            'bg-position': [
+                { 'bg': [*scale_position(), is_arbitrary_variable_position, is_arbitrary_position] },
+            ],
+            'bg-repeat': [{ 'bg': ['no-repeat', { 'repeat': ['', 'x', 'y', 'space', 'round'] }] }],
+            'bg-size': [
+                { 'bg': ['auto', 'cover', 'contain', is_arbitrary_variable_size, is_arbitrary_size] },
+            ],
+            'bg-image': [
+                {
+                    'bg': [
+                        'none',
+                        {
+                            'linear': [
+                                { 'to': ['t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl'] },
+                                is_integer,
+                                is_arbitrary_variable,
+                                is_arbitrary_value,
+                            ],
+                            'radial': ['', is_arbitrary_variable, is_arbitrary_value],
+                            'conic': [is_integer, is_arbitrary_variable, is_arbitrary_value],
+                        },
+                        is_arbitrary_variable_image,
+                        is_arbitrary_image,
+                    ],
+                },
+            ],
+            'bg-color': [{ 'bg': scale_color() }],
+            'gradient-from-pos': [{ 'from': scale_gradient_stop_position() }],
+            'gradient-via-pos': [{ 'via': scale_gradient_stop_position() }],
+            'gradient-to-pos': [{ 'to': scale_gradient_stop_position() }],
+            'gradient-from': [{ 'from': scale_color() }],
+            'gradient-via': [{ 'via': scale_color() }],
+            'gradient-to': [{ 'to': scale_color() }],
+            'rounded': [{ 'rounded': scale_radius() }],
+            'rounded-s': [{ 'rounded-s': scale_radius() }],
+            'rounded-e': [{ 'rounded-e': scale_radius() }],
+            'rounded-t': [{ 'rounded-t': scale_radius() }],
+            'rounded-r': [{ 'rounded-r': scale_radius() }],
+            'rounded-b': [{ 'rounded-b': scale_radius() }],
+            'rounded-l': [{ 'rounded-l': scale_radius() }],
+            'rounded-ss': [{ 'rounded-ss': scale_radius() }],
+            'rounded-se': [{ 'rounded-se': scale_radius() }],
+            'rounded-ee': [{ 'rounded-ee': scale_radius() }],
+            'rounded-es': [{ 'rounded-es': scale_radius() }],
+            'rounded-tl': [{ 'rounded-tl': scale_radius() }],
+            'rounded-tr': [{ 'rounded-tr': scale_radius() }],
+            'rounded-br': [{ 'rounded-br': scale_radius() }],
+            'rounded-bl': [{ 'rounded-bl': scale_radius() }],
+            'border-w': [{ 'border': scale_border_width() }],
+            'border-w-x': [{ 'border-x': scale_border_width() }],
+            'border-w-y': [{ 'border-y': scale_border_width() }],
+            'border-w-s': [{ 'border-s': scale_border_width() }],
+            'border-w-e': [{ 'border-e': scale_border_width() }],
+            'border-w-t': [{ 'border-t': scale_border_width() }],
+            'border-w-r': [{ 'border-r': scale_border_width() }],
+            'border-w-b': [{ 'border-b': scale_border_width() }],
+            'border-w-l': [{ 'border-l': scale_border_width() }],
+            'divide-x': [{ 'divide-x': scale_border_width() }],
             'divide-x-reverse': ['divide-x-reverse'],
-            'divide-y': [{'divide-y': [border_width]}],
+            'divide-y': [{ 'divide-y': scale_border_width() }],
             'divide-y-reverse': ['divide-y-reverse'],
-            'divide-opacity': [{'divide-opacity': [opacity]}],
-            'divide-style': [{'divide': get_line_styles()}],
-            'border-color': [{'border': [border_color]}],
-            'border-color-x': [{'border-x': [border_color]}],
-            'border-color-y': [{'border-y': [border_color]}],
-            'border-color-s': [{'border-s': [border_color]}],
-            'border-color-e': [{'border-e': [border_color]}],
-            'border-color-t': [{'border-t': [border_color]}],
-            'border-color-r': [{'border-r': [border_color]}],
-            'border-color-b': [{'border-b': [border_color]}],
-            'border-color-l': [{'border-l': [border_color]}],
-            'divide-color': [{'divide': [border_color]}],
-            'outline-style': [{'outline': ['', *get_line_styles()]}],
-            'outline-offset': [{'outline-offset': [is_length, is_arbitrary_value]}],
-            'outline-w': [{'outline': [is_length, is_arbitrary_length]}],
-            'outline-color': [{'outline': [colors]}],
-            'ring-w': [{'ring': get_length_with_empty_and_arbitrary()}],
+            'border-style': [{ 'border': [*scale_line_style(), 'hidden', 'none'] }],
+            'divide-style': [{ 'divide': [*scale_line_style(), 'hidden', 'none'] }],
+            'border-color': [{ 'border': scale_color() }],
+            'border-color-x': [{ 'border-x': scale_color() }],
+            'border-color-y': [{ 'border-y': scale_color() }],
+            'border-color-s': [{ 'border-s': scale_color() }],
+            'border-color-e': [{ 'border-e': scale_color() }],
+            'border-color-t': [{ 'border-t': scale_color() }],
+            'border-color-r': [{ 'border-r': scale_color() }],
+            'border-color-b': [{ 'border-b': scale_color() }],
+            'border-color-l': [{ 'border-l': scale_color() }],
+            'divide-color': [{ 'divide': scale_color() }],
+            'outline-style': [{ 'outline': [*scale_line_style(), 'none', 'hidden'] }],
+            'outline-offset': [
+                { 'outline-offset': [is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'outline-w': [
+                { 'outline': ['', is_number, is_arbitrary_variable_length, is_arbitrary_length] },
+            ],
+            'outline-color': [{ 'outline': scale_color() }],
+            'shadow': [
+                {
+                    'shadow': [
+                        '',
+                        'none',
+                        theme_shadow,
+                        is_arbitrary_variable_shadow,
+                        is_arbitrary_shadow,
+                    ],
+                },
+            ],
+            'shadow-color': [{ 'shadow': scale_color() }],
+            'inset-shadow': [
+                {
+                    'inset-shadow': [
+                        'none',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                        theme_inset_shadow,
+                    ],
+                },
+            ],
+            'inset-shadow-color': [{ 'inset-shadow': scale_color() }],
+            'ring-w': [{ 'ring': scale_border_width() }],
             'ring-w-inset': ['ring-inset'],
-            'ring-color': [{'ring': [colors]}],
-            'ring-opacity': [{'ring-opacity': [opacity]}],
-            'ring-offset-w': [{'ring-offset': [is_length, is_arbitrary_length]}],
-            'ring-offset-color': [{'ring-offset': [colors]}],
-
-            # Effects
-            'shadow': [{'shadow': ['', 'inner', 'none', is_tshirt_size, is_arbitrary_shadow]}],
-            'shadow-color': [{'shadow': [is_any]}],
-            'opacity': [{'opacity': [opacity]}],
-            'mix-blend': [{'mix-blend': [*get_blend_modes(), 'plus-lighter', 'plus-darker']}],
-            'bg-blend': [{'bg-blend': get_blend_modes()}],
-
-            # Filters
-            'filter': [{'filter': ['', 'none']}],
-            'blur': [{'blur': [blur]}],
-            'brightness': [{'brightness': [brightness]}],
-            'contrast': [{'contrast': [contrast]}],
-            'drop-shadow': [{'drop-shadow': ['', 'none', is_tshirt_size, is_arbitrary_value]}],
-            'grayscale': [{'grayscale': [grayscale]}],
-            'hue-rotate': [{'hue-rotate': [hue_rotate]}],
-            'invert': [{'invert': [invert]}],
-            'saturate': [{'saturate': [saturate]}],
-            'sepia': [{'sepia': [sepia]}],
-            'backdrop-filter': [{'backdrop-filter': ['', 'none']}],
-            'backdrop-blur': [{'backdrop-blur': [blur]}],
-            'backdrop-brightness': [{'backdrop-brightness': [brightness]}],
-            'backdrop-contrast': [{'backdrop-contrast': [contrast]}],
-            'backdrop-grayscale': [{'backdrop-grayscale': [grayscale]}],
-            'backdrop-hue-rotate': [{'backdrop-hue-rotate': [hue_rotate]}],
-            'backdrop-invert': [{'backdrop-invert': [invert]}],
-            'backdrop-opacity': [{'backdrop-opacity': [opacity]}],
-            'backdrop-saturate': [{'backdrop-saturate': [saturate]}],
-            'backdrop-sepia': [{'backdrop-sepia': [sepia]}],
-
-            # Tables
-            'border-collapse': [{'border': ['collapse', 'separate']}],
-            'border-spacing': [{'border-spacing': [border_spacing]}],
-            'border-spacing-x': [{'border-spacing-x': [border_spacing]}],
-            'border-spacing-y': [{'border-spacing-y': [border_spacing]}],
-            'table-layout': [{'table': ['auto', 'fixed']}],
-            'caption': [{'caption': ['top', 'bottom']}],
-
-            # Transitions and Animation
-            'transition': [{
-                'transition': [
-                    'none',
-                    'all',
-                    '',
-                    'colors',
-                    'opacity',
-                    'shadow',
-                    'transform',
-                    is_arbitrary_value,
-                ],
-            }],
-            'duration': [{'duration': get_number_and_arbitrary()}],
-            'ease': [{'ease': ['linear', 'in', 'out', 'in-out', is_arbitrary_value]}],
-            'delay': [{'delay': get_number_and_arbitrary()}],
-            'animate': [{'animate': ['none', 'spin', 'ping', 'pulse', 'bounce', is_arbitrary_value]}],
-
-            # Transforms
-            'transform': [{'transform': ['', 'gpu', 'none']}],
-            'scale': [{'scale': [scale]}],
-            'scale-x': [{'scale-x': [scale]}],
-            'scale-y': [{'scale-y': [scale]}],
-            'rotate': [{'rotate': [is_integer, is_arbitrary_value]}],
-            'translate-x': [{'translate-x': [translate]}],
-            'translate-y': [{'translate-y': [translate]}],
-            'skew-x': [{'skew-x': [skew]}],
-            'skew-y': [{'skew-y': [skew]}],
-            'transform-origin': [{
-                'origin': [
-                    'center',
-                    'top',
-                    'top-right',
-                    'right',
-                    'bottom-right',
-                    'bottom',
-                    'bottom-left',
-                    'left',
-                    'top-left',
-                    is_arbitrary_value,
-                ],
-            }],
-
-            # Interactivity
-            'accent': [{'accent': ['auto', colors]}],
-            'appearance': [{'appearance': ['none', 'auto']}],
-            'cursor': [{
-                'cursor': [
-                    'auto',
-                    'default',
-                    'pointer',
-                    'wait',
-                    'text',
-                    'move',
-                    'help',
-                    'not-allowed',
-                    'none',
-                    'context-menu',
-                    'progress',
-                    'cell',
-                    'crosshair',
-                    'vertical-text',
-                    'alias',
-                    'copy',
-                    'no-drop',
-                    'grab',
-                    'grabbing',
-                    'all-scroll',
-                    'col-resize',
-                    'row-resize',
-                    'n-resize',
-                    'e-resize',
-                    's-resize',
-                    'w-resize',
-                    'ne-resize',
-                    'nw-resize',
-                    'se-resize',
-                    'sw-resize',
-                    'ew-resize',
-                    'ns-resize',
-                    'nesw-resize',
-                    'nwse-resize',
-                    'zoom-in',
-                    'zoom-out',
-                    is_arbitrary_value,
-                ],
-            }],
-            'caret-color': [{'caret': [colors]}],
-            'pointer-events': [{'pointer-events': ['none', 'auto']}],
-            'resize': [{'resize': ['none', 'y', 'x', '']}],
-            'scroll-behavior': [{'scroll': ['auto', 'smooth']}],
-            'scroll-m': [{'scroll-m': get_spacing_with_arbitrary()}],
-            'scroll-mx': [{'scroll-mx': get_spacing_with_arbitrary()}],
-            'scroll-my': [{'scroll-my': get_spacing_with_arbitrary()}],
-            'scroll-ms': [{'scroll-ms': get_spacing_with_arbitrary()}],
-            'scroll-me': [{'scroll-me': get_spacing_with_arbitrary()}],
-            'scroll-mt': [{'scroll-mt': get_spacing_with_arbitrary()}],
-            'scroll-mr': [{'scroll-mr': get_spacing_with_arbitrary()}],
-            'scroll-mb': [{'scroll-mb': get_spacing_with_arbitrary()}],
-            'scroll-ml': [{'scroll-ml': get_spacing_with_arbitrary()}],
-            'scroll-p': [{'scroll-p': get_spacing_with_arbitrary()}],
-            'scroll-px': [{'scroll-px': get_spacing_with_arbitrary()}],
-            'scroll-py': [{'scroll-py': get_spacing_with_arbitrary()}],
-            'scroll-ps': [{'scroll-ps': get_spacing_with_arbitrary()}],
-            'scroll-pe': [{'scroll-pe': get_spacing_with_arbitrary()}],
-            'scroll-pt': [{'scroll-pt': get_spacing_with_arbitrary()}],
-            'scroll-pr': [{'scroll-pr': get_spacing_with_arbitrary()}],
-            'scroll-pb': [{'scroll-pb': get_spacing_with_arbitrary()}],
-            'scroll-pl': [{'scroll-pl': get_spacing_with_arbitrary()}],
-            'snap-align': [{'snap': ['start', 'end', 'center', 'align-none']}],
-            'snap-stop': [{'snap': ['normal', 'always']}],
-            'snap-type': [{'snap': ['none', 'x', 'y', 'both']}],
-            'snap-strictness': [{'snap': ['mandatory', 'proximity']}],
-            'touch': [{'touch': ['auto', 'none', 'manipulation']}],
-            'touch-x': [{'touch-pan': ['x', 'left', 'right']}],
-            'touch-y': [{'touch-pan': ['y', 'up', 'down']}],
+            'ring-color': [{ 'ring': scale_color() }],
+            'ring-offset-w': [{ 'ring-offset': [is_number, is_arbitrary_length] }],
+            'ring-offset-color': [{ 'ring-offset': scale_color() }],
+            'inset-ring-w': [{ 'inset-ring': scale_border_width() }],
+            'inset-ring-color': [{ 'inset-ring': scale_color() }],
+            'opacity': [{ 'opacity': [is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'mix-blend': [{ 'mix-blend': [*scale_blend_mode(), 'plus-darker', 'plus-lighter'] }],
+            'bg-blend': [{ 'bg-blend': scale_blend_mode() }],
+            'filter': [
+                {
+                    'filter': [
+                        '',
+                        'none',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'blur': [{ 'blur': scale_blur() }],
+            'brightness': [{ 'brightness': [is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'contrast': [{ 'contrast': [is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'drop-shadow': [
+                {
+                    'drop-shadow': [
+                        '',
+                        'none',
+                        theme_drop_shadow,
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'grayscale': [{ 'grayscale': ['', is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'hue-rotate': [{ 'hue-rotate': [is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'invert': [{ 'invert': ['', is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'saturate': [{ 'saturate': [is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'sepia': [{ 'sepia': ['', is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'backdrop-filter': [
+                {
+                    'backdrop-filter': [
+                        '',
+                        'none',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'backdrop-blur': [{ 'backdrop-blur': scale_blur() }],
+            'backdrop-brightness': [
+                { 'backdrop-brightness': [is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'backdrop-contrast': [
+                { 'backdrop-contrast': [is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'backdrop-grayscale': [
+                { 'backdrop-grayscale': ['', is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'backdrop-hue-rotate': [
+                { 'backdrop-hue-rotate': [is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'backdrop-invert': [
+                { 'backdrop-invert': ['', is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'backdrop-opacity': [
+                { 'backdrop-opacity': [is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'backdrop-saturate': [
+                { 'backdrop-saturate': [is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'backdrop-sepia': [
+                { 'backdrop-sepia': ['', is_number, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'border-collapse': [{ 'border': ['collapse', 'separate'] }],
+            'border-spacing': [{ 'border-spacing': scale_unambiguous_spacing() }],
+            'border-spacing-x': [{ 'border-spacing-x': scale_unambiguous_spacing() }],
+            'border-spacing-y': [{ 'border-spacing-y': scale_unambiguous_spacing() }],
+            'table-layout': [{ 'table': ['auto', 'fixed'] }],
+            'caption': [{ 'caption': ['top', 'bottom'] }],
+            'transition': [
+                {
+                    'transition': [
+                        '',
+                        'all',
+                        'colors',
+                        'opacity',
+                        'shadow',
+                        'transform',
+                        'none',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'transition-behavior': [{ 'transition': ['normal', 'discrete'] }],
+            'duration': [{ 'duration': [is_number, 'initial', is_arbitrary_variable, is_arbitrary_value] }],
+            'ease': [
+                { 'ease': ['linear', 'initial', theme_ease, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'delay': [{ 'delay': [is_number, is_arbitrary_variable, is_arbitrary_value] }],
+            'animate': [{ 'animate': ['none', theme_animate, is_arbitrary_variable, is_arbitrary_value] }],
+            'backface': [{ 'backface': ['hidden', 'visible'] }],
+            'perspective': [
+                { 'perspective': [theme_perspective, is_arbitrary_variable, is_arbitrary_value] },
+            ],
+            'perspective-origin': [{ 'perspective-origin': scale_origin() }],
+            'rotate': [{ 'rotate': scale_rotate() }],
+            'rotate-x': [{ 'rotate-x': scale_rotate() }],
+            'rotate-y': [{ 'rotate-y': scale_rotate() }],
+            'rotate-z': [{ 'rotate-z': scale_rotate() }],
+            'scale': [{ 'scale': scale_scale() }],
+            'scale-x': [{ 'scale-x': scale_scale() }],
+            'scale-y': [{ 'scale-y': scale_scale() }],
+            'scale-z': [{ 'scale-z': scale_scale() }],
+            'scale-3d': ['scale-3d'],
+            'skew': [{ 'skew': scale_skew() }],
+            'skew-x': [{ 'skew-x': scale_skew() }],
+            'skew-y': [{ 'skew-y': scale_skew() }],
+            'transform': [
+                { 'transform': [is_arbitrary_variable, is_arbitrary_value, '', 'none', 'gpu', 'cpu'] },
+            ],
+            'transform-origin': [{ 'origin': scale_origin() }],
+            'transform-style': [{ 'transform': ['3d', 'flat'] }],
+            'translate': [{ 'translate': scale_translate() }],
+            'translate-x': [{ 'translate-x': scale_translate() }],
+            'translate-y': [{ 'translate-y': scale_translate() }],
+            'translate-z': [{ 'translate-z': scale_translate() }],
+            'translate-none': ['translate-none'],
+            'accent': [{ 'accent': scale_color() }],
+            'appearance': [{ 'appearance': ['none', 'auto'] }],
+            'caret-color': [{ 'caret': scale_color() }],
+            'color-scheme': [
+                { 'scheme': ['normal', 'dark', 'light', 'light-dark', 'only-dark', 'only-light'] },
+            ],
+            'cursor': [
+                {
+                    'cursor': [
+                        'auto',
+                        'default',
+                        'pointer',
+                        'wait',
+                        'text',
+                        'move',
+                        'help',
+                        'not-allowed',
+                        'none',
+                        'context-menu',
+                        'progress',
+                        'cell',
+                        'crosshair',
+                        'vertical-text',
+                        'alias',
+                        'copy',
+                        'no-drop',
+                        'grab',
+                        'grabbing',
+                        'all-scroll',
+                        'col-resize',
+                        'row-resize',
+                        'n-resize',
+                        'e-resize',
+                        's-resize',
+                        'w-resize',
+                        'ne-resize',
+                        'nw-resize',
+                        'se-resize',
+                        'sw-resize',
+                        'ew-resize',
+                        'ns-resize',
+                        'nesw-resize',
+                        'nwse-resize',
+                        'zoom-in',
+                        'zoom-out',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'field-sizing': [{ 'field-sizing': ['fixed', 'content'] }],
+            'pointer-events': [{ 'pointer-events': ['auto', 'none'] }],
+            'resize': [{ 'resize': ['none', '', 'y', 'x'] }],
+            'scroll-behavior': [{ 'scroll': ['auto', 'smooth'] }],
+            'scroll-m': [{ 'scroll-m': scale_unambiguous_spacing() }],
+            'scroll-mx': [{ 'scroll-mx': scale_unambiguous_spacing() }],
+            'scroll-my': [{ 'scroll-my': scale_unambiguous_spacing() }],
+            'scroll-ms': [{ 'scroll-ms': scale_unambiguous_spacing() }],
+            'scroll-me': [{ 'scroll-me': scale_unambiguous_spacing() }],
+            'scroll-mt': [{ 'scroll-mt': scale_unambiguous_spacing() }],
+            'scroll-mr': [{ 'scroll-mr': scale_unambiguous_spacing() }],
+            'scroll-mb': [{ 'scroll-mb': scale_unambiguous_spacing() }],
+            'scroll-ml': [{ 'scroll-ml': scale_unambiguous_spacing() }],
+            'scroll-p': [{ 'scroll-p': scale_unambiguous_spacing() }],
+            'scroll-px': [{ 'scroll-px': scale_unambiguous_spacing() }],
+            'scroll-py': [{ 'scroll-py': scale_unambiguous_spacing() }],
+            'scroll-ps': [{ 'scroll-ps': scale_unambiguous_spacing() }],
+            'scroll-pe': [{ 'scroll-pe': scale_unambiguous_spacing() }],
+            'scroll-pt': [{ 'scroll-pt': scale_unambiguous_spacing() }],
+            'scroll-pr': [{ 'scroll-pr': scale_unambiguous_spacing() }],
+            'scroll-pb': [{ 'scroll-pb': scale_unambiguous_spacing() }],
+            'scroll-pl': [{ 'scroll-pl': scale_unambiguous_spacing() }],
+            'snap-align': [{ 'snap': ['start', 'end', 'center', 'align-none'] }],
+            'snap-stop': [{ 'snap': ['normal', 'always'] }],
+            'snap-type': [{ 'snap': ['none', 'x', 'y', 'both'] }],
+            'snap-strictness': [{ 'snap': ['mandatory', 'proximity'] }],
+            'touch': [{ 'touch': ['auto', 'none', 'manipulation'] }],
+            'touch-x': [{ 'touch-pan': ['x', 'left', 'right'] }],
+            'touch-y': [{ 'touch-pan': ['y', 'up', 'down'] }],
             'touch-pz': ['touch-pinch-zoom'],
-            'select': [{'select': ['none', 'text', 'all', 'auto']}],
-            'will-change': [{'will-change': ['auto', 'scroll', 'contents', 'transform', is_arbitrary_value]}],
-
-            # SVG
-            'fill': [{'fill': [colors, 'none']}],
-            'stroke-w': [{'stroke': [is_length, is_arbitrary_length, is_arbitrary_number]}],
-            'stroke': [{'stroke': [colors, 'none']}],
-
-            # Accessibility
-            'sr': ['sr-only', 'not-sr-only'],
-            'forced-color-adjust': [{'forced-color-adjust': ['auto', 'none']}],
+            'select': [{ 'select': ['none', 'text', 'all', 'auto'] }],
+            'will-change': [
+                {
+                    'will-change': [
+                        'auto',
+                        'scroll',
+                        'contents',
+                        'transform',
+                        is_arbitrary_variable,
+                        is_arbitrary_value,
+                    ],
+                },
+            ],
+            'fill': [{ 'fill': ['none', *scale_color()] }],
+            'stroke-w': [
+                {
+                    'stroke': [
+                        is_number,
+                        is_arbitrary_variable_length,
+                        is_arbitrary_length,
+                        is_arbitrary_number,
+                    ],
+                },
+            ],
+            'stroke': [{ 'stroke': ['none', *scale_color()] }],
+            'forced-color-adjust': [{ 'forced-color-adjust': ['auto', 'none'] }],
         },
-        'conflictingClassGroups': {
+        
+        # Conflicting class groups
+        'conflicting_class_groups': {
             'overflow': ['overflow-x', 'overflow-y'],
             'overscroll': ['overscroll-x', 'overscroll-y'],
             'inset': ['inset-x', 'inset-y', 'start', 'end', 'top', 'right', 'bottom', 'left'],
@@ -726,6 +985,8 @@ def get_default_config() -> Config:
             ],
             'border-color-x': ['border-color-r', 'border-color-l'],
             'border-color-y': ['border-color-t', 'border-color-b'],
+            'translate': ['translate-x', 'translate-y', 'translate-none'],
+            'translate-none': ['translate', 'translate-x', 'translate-y', 'translate-z'],
             'scroll-m': [
                 'scroll-mx',
                 'scroll-my',
@@ -755,7 +1016,24 @@ def get_default_config() -> Config:
             'touch-y': ['touch'],
             'touch-pz': ['touch'],
         },
-        'conflictingClassGroupModifiers': {
-            'font-size': ['leading'],
-        }
+        
+        # Conflicting class group modifiers
+        'conflicting_class_group_modifiers': {
+        'font-size': ['leading'],
+        },
+        
+        # Order sensitive modifiers
+        'order_sensitive_modifiers': [
+        'before',
+            'after',
+            'placeholder',
+            'file',
+            'marker',
+            'selection',
+            'first-line',
+            'first-letter',
+            'backdrop',
+            '*',
+            '**',
+        ],
     }

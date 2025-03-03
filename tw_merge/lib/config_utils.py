@@ -1,36 +1,58 @@
-from typing import TypeVar, Callable, Any, Dict
-from dataclasses import dataclass
+"""
+Configuration utilities for tailwind-merge.
 
-from .class_group_utils import create_class_group_utils
-from .lru_cache import create_lru_cache
-from .parse_class_name import create_parse_class_name
+This module provides utilities for working with Tailwind CSS configurations,
+including creating and accessing various utility functions that operate on classes.
+"""
 
-T = TypeVar('T')
-CacheGet = Callable[[str], str | None]
-CacheSet = Callable[[str, str], None]
+from typing import Protocol, Callable, Optional, List, Dict, Any, TypedDict
 
-@dataclass
-class Cache:
-    get: CacheGet
-    set: CacheSet
+from tw_merge.lib.class_group_utils import create_class_group_utils
+from tw_merge.lib.lru_cache import create_lru_cache
+from tw_merge.lib.parse_class_name import create_parse_class_name
+from tw_merge.lib.sort_modifiers import create_sort_modifiers
+from tw_merge.lib.types import AnyConfig, AnyClassGroupIds, ParsedClassName
 
-class ConfigUtils:
+
+class Cache(Protocol):
+    """Protocol for the LRU cache used in config utils."""
+    
+    def get(self, key: str) -> Optional[str]:
+        """Get a value from the cache."""
+        ...
+    
+    def set(self, key: str, value: str) -> None:
+        """Set a value in the cache."""
+        ...
+
+
+class ConfigUtils(TypedDict):
+    """Configuration utilities for working with Tailwind CSS classes."""
+    
     cache: Cache
-    parse_class_name: Any  # Will be properly typed once parse_class_name is implemented
-    get_class_group_id: Callable[[str], str | None]
-    get_conflicting_class_group_ids: Callable[[str, bool], list[str]]
+    parse_class_name: Callable[[str], ParsedClassName]
+    sort_modifiers: Callable[[List[str]], List[str]]
+    get_class_group_id: Callable[[str], Optional[AnyClassGroupIds]]
+    get_conflicting_class_group_ids: Callable[[AnyClassGroupIds, bool], List[AnyClassGroupIds]]
 
-def create_config_utils(config: Dict[str, Any]) -> Dict[str, Any]:
-    """Create configuration utilities."""
-    cache = create_lru_cache(config['cache_size'])
-    class_group_utils = create_class_group_utils(config)
+
+def create_config_utils(config: AnyConfig) -> ConfigUtils:
+    """
+    Create configuration utilities for working with Tailwind CSS classes.
+    
+    Args:
+        config: The tailwind-merge configuration
+        
+    Returns:
+        A dictionary of utility functions
+    """
+    # Get class group utilities
+    get_class_group_id, get_conflicting_class_group_ids = create_class_group_utils(config)
     
     return {
-        'cache': {
-            'get': cache.get,
-            'set': cache.set
-        },
+        'cache': create_lru_cache(config.get('cache_size', 500)),
         'parse_class_name': create_parse_class_name(config),
-        'get_class_group_id': class_group_utils['get_class_group_id'],
-        'get_conflicting_class_group_ids': class_group_utils['get_conflicting_class_group_ids']
+        'sort_modifiers': create_sort_modifiers(config),
+        'get_class_group_id': get_class_group_id,
+        'get_conflicting_class_group_ids': get_conflicting_class_group_ids,
     }
