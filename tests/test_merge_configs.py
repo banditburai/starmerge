@@ -9,7 +9,7 @@ This test file verifies the merge_configs function behaves correctly when mergin
 """
 
 import pytest
-from tw_merge.lib.merge_configs import merge_configs
+from starmerge.lib.merge_configs import merge_configs
 
 
 def test_mergeconfigs_has_correct_behavior():

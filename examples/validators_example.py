@@ -1,11 +1,11 @@
 """
-Example usage of validator functions from tw_merge.
+Example usage of validator functions from starmerge.
 
 This script demonstrates how to use the validator functions from the tw_merge library
 to validate different types of Tailwind CSS class values.
 """
 
-from tw_merge.lib.validators import (
+from starmerge.lib.validators import (
     is_arbitrary_value,
     is_arbitrary_length,
     is_arbitrary_number,

@@ -7,7 +7,7 @@ consistent behavior between the JavaScript and Python implementations.
 """
 
 import pytest
-from tw_merge import get_default_config
+from starmerge import get_default_config
 
 
 def test_default_config_has_correct_types():

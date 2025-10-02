@@ -5,7 +5,7 @@ This example shows how to create a custom tailwind merge function
 with a simplified configuration, and how to use it to merge class lists.
 """
 
-from tw_merge import create_tailwind_merge
+from starmerge import create_tailwind_merge
 
 
 def main():

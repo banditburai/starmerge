@@ -5,10 +5,10 @@ This example shows how to use the merge_class_list function to merge
 Tailwind CSS classes, handling conflicts according to the configured rules.
 """
 
-from tw_merge.lib.merge_classlist import merge_class_list
-from tw_merge.lib.parse_class_name import create_parse_class_name
-from tw_merge.lib.class_group_utils import create_class_group_utils
-from tw_merge.lib.sort_modifiers import create_sort_modifiers
+from starmerge.lib.merge_classlist import merge_class_list
+from starmerge.lib.parse_class_name import create_parse_class_name
+from starmerge.lib.class_group_utils import create_class_group_utils
+from starmerge.lib.sort_modifiers import create_sort_modifiers
 
 
 class SimpleConfigUtils:

@@ -1,46 +1,23 @@
-"""
-Parser for Tailwind CSS class names.
-
-This module contains functions for parsing Tailwind CSS class names
-into their component parts (modifiers, base class name, etc.).
-"""
+"""Parser for Tailwind CSS class names into their component parts."""
 
 from typing import Callable, Optional, Protocol
 
-from tw_merge.lib.types import AnyConfig, ParsedClassName, ExperimentalParseClassNameParam
+from starmerge.lib.types import AnyConfig, ParsedClassName, ExperimentalParseClassNameParam
 
-
-# Constants
 IMPORTANT_MODIFIER = '!'
 MODIFIER_SEPARATOR = ':'
 MODIFIER_SEPARATOR_LENGTH = len(MODIFIER_SEPARATOR)
 
 
 def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassName]:
-    """
-    Create a function that parses class names into their component parts.
-    
-    Args:
-        config: The tailwind-merge configuration
-        
-    Returns:
-        A function that parses class names
-    """
     prefix = config.get('prefix')
     experimental_parse_class_name = config.get('experimental_parse_class_name')
-    
+
     def parse_class_name(class_name: str) -> ParsedClassName:
         """
         Parse class name into parts.
-        
-        Inspired by `splitAtTopLevelOnly` used in Tailwind CSS
-        @see https://github.com/tailwindlabs/tailwindcss/blob/v3.2.2/src/util/splitAtTopLevelOnly.js
-        
-        Args:
-            class_name: The class name to parse
-            
-        Returns:
-            A ParsedClassName object with the parsed components
+        Inspired by splitAtTopLevelOnly from Tailwind CSS.
+        https://github.com/tailwindlabs/tailwindcss/blob/v3.2.2/src/util/splitAtTopLevelOnly.js
         """
         modifiers = []
         
@@ -86,8 +63,7 @@ def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassNam
             base_class_name=base_class_name,
             maybe_postfix_modifier_position=maybe_postfix_modifier_position,
         )
-    
-    # Handle prefix if it exists
+
     if prefix:
         full_prefix = prefix + MODIFIER_SEPARATOR
         parse_class_name_original = parse_class_name
@@ -102,10 +78,9 @@ def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassNam
                 maybe_postfix_modifier_position=None,
                 is_external=True,
             )
-        
+
         parse_class_name = parse_class_name_with_prefix
-    
-    # Handle experimental parse class name if it exists
+
     if experimental_parse_class_name:
         parse_class_name_original = parse_class_name
         
@@ -115,31 +90,20 @@ def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassNam
                 parse_class_name=parse_class_name_original,
             )
             return experimental_parse_class_name(param)
-        
+
         parse_class_name = parse_class_name_experimental
-    
+
     return parse_class_name
 
 
 def strip_important_modifier(base_class_name: str) -> str:
-    """
-    Strip the important modifier (!) from a class name.
-    
-    The important modifier can be at the beginning or end of the class name.
-    
-    Args:
-        base_class_name: The base class name to strip the important modifier from
-        
-    Returns:
-        The base class name without the important modifier
-    """
+    """Strip the important modifier (!) from class name (can be at start or end)."""
     if base_class_name.endswith(IMPORTANT_MODIFIER):
         return base_class_name[:-1]
-    
-    # In Tailwind CSS v3 the important modifier was at the start of the base class name.
-    # This is still supported for legacy reasons.
-    # @see https://github.com/dcastil/tailwind-merge/issues/513#issuecomment-2614029864
+
+    # Tailwind CSS v3 compatibility: important modifier at start
+    # https://github.com/dcastil/tailwind-merge/issues/513#issuecomment-2614029864
     if base_class_name.startswith(IMPORTANT_MODIFIER):
         return base_class_name[1:]
-    
+
     return base_class_name

@@ -9,7 +9,7 @@ This test file verifies the experimental parse class name feature.
 """
 
 import pytest
-from tw_merge import extend_tailwind_merge
+from starmerge import extend_tailwind_merge
 from typing import Dict, Any
 
 
@@ -57,7 +57,7 @@ def test_ignoring_breakpoint_modifiers():
         ]
         
         # Create a new ParsedClassName with filtered modifiers and all other attributes preserved
-        from tw_merge.lib.types import ParsedClassName
+        from starmerge.lib.types import ParsedClassName
         return ParsedClassName(
             modifiers=filtered_modifiers,
             has_important_modifier=parsed.has_important_modifier,

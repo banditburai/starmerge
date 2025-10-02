@@ -1,11 +1,11 @@
 """
-Example usage of class_group_utils from tw_merge.
+Example usage of class_group_utils from starmerge.
 
 This script demonstrates how to use the class group utilities from the tw_merge library
 to identify Tailwind CSS class groups and resolve conflicts.
 """
 
-from tw_merge.lib.class_group_utils import create_class_group_utils
+from starmerge.lib.class_group_utils import create_class_group_utils
 from typing import Dict, List, Any
 
 def main():

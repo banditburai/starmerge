@@ -11,8 +11,8 @@ This test file verifies the lazy initialization behavior of the createTailwindMe
 import pytest
 from unittest.mock import Mock
 
-from tw_merge import create_tailwind_merge
-from tw_merge.lib.default_config import get_default_config
+from starmerge import create_tailwind_merge
+from starmerge.lib.default_config import get_default_config
 
 
 def test_lazy_initialization():

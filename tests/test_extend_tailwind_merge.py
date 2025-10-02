@@ -9,7 +9,7 @@ This test file verifies the extend_tailwind_merge functionality.
 """
 
 import pytest
-from tw_merge import extend_tailwind_merge
+from starmerge import extend_tailwind_merge
 
 
 def test_extendtailwindmerge_works_correctly_with_single_config():

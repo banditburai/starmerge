@@ -7,9 +7,9 @@ consistent behavior between the JavaScript and Python implementations.
 """
 
 import pytest
-from tw_merge import tw_merge
+from starmerge import merge
 
 
 def test_merges_content_utilities_correctly():
     """Equivalent to the 'merges content utilities correctly' test in TypeScript."""
-    assert tw_merge("content-['hello'] content-[attr(data-content)]") == 'content-[attr(data-content)]' 
+    assert merge("content-['hello'] content-[attr(data-content)]") == 'content-[attr(data-content)]' 

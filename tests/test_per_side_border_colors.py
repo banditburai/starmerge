@@ -10,12 +10,12 @@ including conflicts between specific sides and general border colors.
 """
 
 import pytest
-from tw_merge import tw_merge
+from starmerge import merge
 
 
 def test_merges_classes_with_per_side_border_colors_correctly():
     """Test if per-side border color classes are merged correctly."""
-    assert tw_merge('border-t-some-blue border-t-other-blue') == 'border-t-other-blue'
-    assert tw_merge('border-t-some-blue border-some-blue') == 'border-some-blue'
-    assert tw_merge('border-some-blue border-s-some-blue') == 'border-some-blue border-s-some-blue'
-    assert tw_merge('border-e-some-blue border-some-blue') == 'border-some-blue' 
+    assert merge('border-t-some-blue border-t-other-blue') == 'border-t-other-blue'
+    assert merge('border-t-some-blue border-some-blue') == 'border-some-blue'
+    assert merge('border-some-blue border-s-some-blue') == 'border-some-blue border-s-some-blue'
+    assert merge('border-e-some-blue border-some-blue') == 'border-some-blue' 

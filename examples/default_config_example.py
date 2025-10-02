@@ -5,8 +5,8 @@ This example shows how to use the default Tailwind CSS configuration with the
 tailwind-merge library to merge class lists.
 """
 
-from tw_merge.lib.create_tailwind_merge import create_tailwind_merge
-from tw_merge.lib.default_config import get_default_config
+from starmerge.lib.create_tailwind_merge import create_tailwind_merge
+from starmerge.lib.default_config import get_default_config
 
 
 def main():

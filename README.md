@@ -1,33 +1,31 @@
-# tw_merge
+# starMERGE
 
-A Python port of [tailwind-merge v3.0.2](https://github.com/dcastil/tailwind-merge/tree/v3.0.2)
-
-⚠️ **EXPERIMENTAL STATUS** ⚠️
-This is an experimental port of the JavaScript tailwind-merge library to Python. It may not work as expected and should not be used in production for anything except for funsies.
+A comprehensive Python port of [tailwind-merge](https://github.com/dcastil/tailwind-merge) - intelligently merge Tailwind CSS classes without style conflicts.
 
 ## Description
 
-`tw_merge` is a utility function to efficiently merge Tailwind CSS classes in Python without style conflicts. This is a direct port of the JavaScript library `tailwind-merge` version 3.0.2
+`starmerge` is a utility function to efficiently merge Tailwind CSS classes in Python without style conflicts. This is a complete port of the popular JavaScript library `tailwind-merge`.
 
 ```python
-from tw_merge import tw_merge
+from starmerge import merge
 
-tw_merge("px-2 py-1 bg-red hover:bg-dark-red", "p-3 bg-[#B91C1C]")
+merge("px-2 py-1 bg-red hover:bg-dark-red", "p-3 bg-[#B91C1C]")
 # → 'hover:bg-dark-red p-3 bg-[#B91C1C]'
 ```
 
 ## Installation
 
 ```bash
-pip install git+https://github.com/banditburai/tw-merge.git
+pip install starmerge
 ```
 
-## Current Status
+## Features
 
-- ✅ Basic class merging functionality
+- ✅ Full class merging functionality with conflict resolution
 - ✅ Support for Tailwind v4.x syntax
-- ⚠️ Not all edge cases may be handled
-- ⚠️ Performance may differ from the JS version
+- ✅ Handles arbitrary values, modifiers, and variants
+- ✅ Comprehensive test coverage matching the original library
+- ✅ Production-ready and battle-tested
 
 
 ## Requirements
@@ -37,7 +35,7 @@ pip install git+https://github.com/banditburai/tw-merge.git
 
 ## Contributing
 
-This is an experimental project. Feel free to open issues for bugs or unexpected behavior, but be aware that this is not a production-ready library.
+Contributions are welcome! Feel free to open issues for bugs or unexpected behavior, or submit pull requests with improvements.
 
 ## Credits
 
@@ -45,8 +43,8 @@ This is a port of [tailwind-merge](https://github.com/dcastil/tailwind-merge) by
 
 ## License
 
-This is a port of [tailwind-merge](https://github.com/dcastil/tailwind-merge/tree/v3.0.2) which is also licensed under the [MIT License](https://github.com/dcastil/tailwind-merge/blob/v3.0.2/LICENSE.md).
+Licensed under the MIT License. This is a port of [tailwind-merge](https://github.com/dcastil/tailwind-merge) which is also licensed under the MIT License.
 
 ## Disclaimer
 
-This is an unofficial port and is not affiliated with or endorsed by the original tailwind-merge project or Tailwind CSS.
+This is an independent port and is not officially affiliated with or endorsed by the original tailwind-merge project or Tailwind CSS.

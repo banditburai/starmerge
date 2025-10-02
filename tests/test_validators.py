@@ -21,7 +21,7 @@ function that doesn't check for specific labels.
 """
 
 import pytest
-from tw_merge.lib.validators import (
+from starmerge.lib.validators import (
     is_any,
     is_arbitrary_image,
     is_arbitrary_length,

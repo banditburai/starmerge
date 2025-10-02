@@ -7,7 +7,7 @@ matching the runtime behavior since Python is dynamically typed.
 """
 
 import pytest
-from tw_merge import extend_tailwind_merge, from_theme, get_default_config, merge_configs
+from starmerge import extend_tailwind_merge, from_theme, get_default_config, merge_configs
 
 
 def test_extendtailwindmerge_type_generics_work_correctly():

@@ -10,7 +10,7 @@ extend_tailwind_merge to create a customized merge function.
 """
 
 import pytest
-from tw_merge import extend_tailwind_merge
+from starmerge import extend_tailwind_merge
 
 
 def test_prefix_working_correctly():

@@ -7,8 +7,8 @@ consistent behavior between the JavaScript and Python implementations.
 """
 
 import pytest
-from tw_merge.lib.default_config import get_default_config
-from tw_merge.lib.class_group_utils import create_class_map
+from starmerge.lib.default_config import get_default_config
+from starmerge.lib.class_group_utils import create_class_map
 
 
 def test_class_map_has_correct_class_groups_at_first_part():

@@ -10,8 +10,8 @@ and function as expected.
 """
 
 import pytest
-from tw_merge import (
-    tw_merge,
+from starmerge import (
+    merge,
     create_tailwind_merge,
     get_default_config,
     validators,
@@ -24,7 +24,7 @@ from tw_merge import (
 
 def test_has_correct_export_types():
     """Test that all APIs are exported with the correct types."""
-    assert callable(tw_merge)
+    assert callable(merge)
     assert callable(create_tailwind_merge)
     assert callable(get_default_config)
     
@@ -62,16 +62,16 @@ def test_has_correct_export_types():
 
 def test_twmerge_has_correct_inputs_and_outputs():
     """Test that tw_merge accepts the correct inputs and returns strings."""
-    assert isinstance(tw_merge(''), str)
-    assert isinstance(tw_merge('hello world'), str)
-    assert isinstance(tw_merge('-:-:-:::---h-'), str)
-    assert isinstance(tw_merge('hello world', '-:-:-:::---h-'), str)
-    assert isinstance(tw_merge('hello world', '-:-:-:::---h-', '', 'something'), str)
-    assert isinstance(tw_merge('hello world', None), str)
-    assert isinstance(tw_merge('hello world', None, None), str)
-    assert isinstance(tw_merge('hello world', None, None, False), str)
-    assert isinstance(tw_merge('hello world', [None], [None, False]), str)
-    assert isinstance(tw_merge('hello world', [None], [None, [False, 'some-class'], []]), str)
+    assert isinstance(merge(''), str)
+    assert isinstance(merge('hello world'), str)
+    assert isinstance(merge('-:-:-:::---h-'), str)
+    assert isinstance(merge('hello world', '-:-:-:::---h-'), str)
+    assert isinstance(merge('hello world', '-:-:-:::---h-', '', 'something'), str)
+    assert isinstance(merge('hello world', None), str)
+    assert isinstance(merge('hello world', None, None), str)
+    assert isinstance(merge('hello world', None, None, False), str)
+    assert isinstance(merge('hello world', [None], [None, False]), str)
+    assert isinstance(merge('hello world', [None], [None, [False, 'some-class'], []]), str)
 
 
 def test_createtailwindmerge_has_correct_inputs_and_outputs():

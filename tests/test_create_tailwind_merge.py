@@ -10,7 +10,7 @@ actual behavior of both implementations where conflicts are properly resolved.
 """
 
 import pytest
-from tw_merge import create_tailwind_merge
+from starmerge import create_tailwind_merge
 
 
 def test_createtailwindmerge_works_with_single_config_function():

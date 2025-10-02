@@ -10,7 +10,7 @@ the clsx library (https://github.com/lukeed/clsx) and modified for tailwind-merg
 """
 
 import pytest
-from tw_merge import tw_join
+from starmerge import tw_join
 
 
 def test_strings():

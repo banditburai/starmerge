@@ -1,10 +1,4 @@
-"""
-tw_merge library.
-
-This is a Python port of the tailwind-merge library, which efficiently merges Tailwind CSS classes.
-"""
-
-# Import modules to expose at the package level
+"""Python port of the tailwind-merge library for efficiently merging Tailwind CSS classes."""
 from . import validators
 from .validators import *
 from .parse_class_name import create_parse_class_name, IMPORTANT_MODIFIER
@@ -15,11 +9,10 @@ from .merge_classlist import merge_class_list
 from .config_utils import create_config_utils
 from .sort_modifiers import create_sort_modifiers
 from .default_config import get_default_config
-from .tw_merge import tailwind_merge, tw_merge
+from .tw_merge import tailwind_merge, merge
 from .extend_tailwind_merge import extend_tailwind_merge
 from .merge_configs import merge_configs
 
-# Make individual modules available
 __all__ = [
     'validators',
     'create_parse_class_name',
@@ -32,7 +25,7 @@ __all__ = [
     'IMPORTANT_MODIFIER',
     'get_default_config',
     'tailwind_merge',
-    'tw_merge',
+    'merge',
     'extend_tailwind_merge',
     'merge_configs',
 ]

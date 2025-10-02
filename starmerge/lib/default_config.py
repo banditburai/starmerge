@@ -1,17 +1,10 @@
-"""
-Default configuration for tailwind-merge.
-
-This file provides the default configuration used by the tailwind-merge function.
-It is converted from the TypeScript configuration file.
-"""
+"""Default configuration for tailwind-merge, converted from TypeScript."""
 
 from typing import Dict, List, Any, Union, Callable, Optional
 
-# Import necessary modules and functions
-from tw_merge.lib.from_theme import from_theme
-from tw_merge.lib.types import Config
-from tw_merge.lib.validators import (
-    # Validator functions - these will be properly imported
+from starmerge.lib.from_theme import from_theme
+from starmerge.lib.types import Config
+from starmerge.lib.validators import (
     is_any,
     is_any_non_arbitrary,
     is_arbitrary_image,
@@ -37,22 +30,9 @@ from tw_merge.lib.validators import (
 
 
 def get_default_config(previous_config=None):
-    """
-    Get the default configuration for tailwind-merge.
-    
-    Args:
-        previous_config: Optional previous configuration which is ignored.
-                        This parameter exists to make the function compatible
-                        with function composition patterns like in the TypeScript version.
-    
-    Returns:
-        The default configuration object.
-    """
-    
     # =========================================================================
     # SECTION 1: Theme Getters
     # =========================================================================
-    # These are functions that retrieve values from the theme configuration
     theme_color = from_theme('color')
     theme_font = from_theme('font')
     theme_text = from_theme('text')
@@ -75,14 +55,11 @@ def get_default_config(previous_config=None):
     # =========================================================================
     # SECTION 2: Scale Functions
     # =========================================================================
-    # These functions define scales for various CSS properties
-    
+
     def scale_break():
-        """Scale function for break properties."""
         return ['auto', 'avoid', 'all', 'avoid-page', 'page', 'left', 'right', 'column']
-    
+
     def scale_position():
-        """Scale function for position properties."""
         return [
             'bottom',
             'center',
@@ -96,27 +73,21 @@ def get_default_config(previous_config=None):
         ]
     
     def scale_overflow():
-        """Scale function for overflow properties."""
         return ['auto', 'hidden', 'clip', 'visible', 'scroll']
     
     def scale_overscroll():
-        """Scale function for overscroll properties."""
         return ['auto', 'contain', 'none']
     
     def scale_unambiguous_spacing():
-        """Scale function for unambiguous spacing properties."""
         return [is_arbitrary_variable, is_arbitrary_value, 'px', is_number, theme_spacing]
     
     def scale_inset():
-        """Scale function for inset properties."""
         return [is_fraction, 'full', 'auto', *scale_unambiguous_spacing()]
     
     def scale_grid_template_cols_rows():
-        """Scale function for grid-template-columns and grid-template-rows properties."""
         return [is_integer, 'none', 'subgrid', is_arbitrary_variable, is_arbitrary_value]
     
     def scale_grid_col_row_start_and_end():
-        """Scale function for grid column/row start/end properties with span."""
         return [
             'auto',
             {'span': ['full', is_integer, is_arbitrary_variable, is_arbitrary_value]},
@@ -125,27 +96,21 @@ def get_default_config(previous_config=None):
         ]
     
     def scale_grid_col_row_start_or_end():
-        """Scale function for grid column/row start or end properties."""
         return [is_integer, 'auto', is_arbitrary_variable, is_arbitrary_value]
     
     def scale_grid_auto_cols_rows():
-        """Scale function for grid-auto-columns and grid-auto-rows properties."""
         return ['auto', 'min', 'max', 'fr', is_arbitrary_variable, is_arbitrary_value]
     
     def scale_align_primary_axis():
-        """Scale function for primary axis alignment properties."""
         return ['start', 'end', 'center', 'between', 'around', 'evenly', 'stretch', 'baseline']
     
     def scale_align_secondary_axis():
-        """Scale function for secondary axis alignment properties."""
         return ['start', 'end', 'center', 'stretch']
     
     def scale_margin():
-        """Scale function for margin properties."""
         return ['auto', *scale_unambiguous_spacing()]
     
     def scale_sizing():
-        """Scale function for sizing properties."""
         return [
             is_fraction,
             is_number,
@@ -164,15 +129,12 @@ def get_default_config(previous_config=None):
         ]
     
     def scale_color():
-        """Scale function for color properties."""
         return [theme_color, is_arbitrary_variable, is_arbitrary_value]
     
     def scale_gradient_stop_position():
-        """Scale function for gradient stop position properties."""
         return [is_percent, is_arbitrary_length]
     
     def scale_radius():
-        """Scale function for border radius properties."""
         return [
             '',
             'none',
@@ -183,15 +145,12 @@ def get_default_config(previous_config=None):
         ]
     
     def scale_border_width():
-        """Scale function for border width properties."""
         return ['', is_number, is_arbitrary_variable_length, is_arbitrary_length]
     
     def scale_line_style():
-        """Scale function for line style properties."""
         return ['solid', 'dashed', 'dotted', 'double']
     
     def scale_blend_mode():
-        """Scale function for blend mode properties."""
         return [
             'normal',
             'multiply',
@@ -212,7 +171,6 @@ def get_default_config(previous_config=None):
         ]
     
     def scale_blur():
-        """Scale function for blur properties."""
         return [
             '',
             'none',
@@ -222,7 +180,6 @@ def get_default_config(previous_config=None):
         ]
     
     def scale_origin():
-        """Scale function for transform origin properties."""
         return [
             'center',
             'top',
@@ -238,30 +195,24 @@ def get_default_config(previous_config=None):
         ]
     
     def scale_rotate():
-        """Scale function for rotation properties."""
         return ['none', is_number, is_arbitrary_variable, is_arbitrary_value]
     
     def scale_scale():
-        """Scale function for scaling properties."""
         return ['none', is_number, is_arbitrary_variable, is_arbitrary_value]
     
     def scale_skew():
-        """Scale function for skew properties."""
         return [is_number, is_arbitrary_variable, is_arbitrary_value]
     
     def scale_translate():
-        """Scale function for translate properties."""
         return [is_fraction, 'full', *scale_unambiguous_spacing()]
     
     # =========================================================================
     # SECTION 3: Return Configuration Object
     # =========================================================================
-    # This returns the complete configuration object
-    
+
     return {
         'cache_size': 500,
-        
-        # Theme configuration
+
         'theme': {
             'animate': ['spin', 'ping', 'pulse', 'bounce'],
             'aspect': ['video'],
@@ -287,23 +238,12 @@ def get_default_config(previous_config=None):
             'leading': ['none', 'tight', 'snug', 'normal', 'relaxed', 'loose'],
             'perspective': ['dramatic', 'near', 'normal', 'midrange', 'distant', 'none'],
             'radius': [is_tshirt_size],
-            'shadow': [
-                {
-                    'shadow': [
-                        '',
-                        'none',
-                        theme_shadow,
-                        is_arbitrary_variable_shadow,
-                        is_arbitrary_shadow,
-                    ],
-                },
-            ],
+            'shadow': ['sm', '', 'md', 'lg', 'xl', '2xl'],
             'spacing': ['px', is_number],
             'text': [is_tshirt_size],
             'tracking': ['tighter', 'tight', 'normal', 'wide', 'wider', 'widest'],
         },
-        
-        # Class groups configuration
+
         'class_groups': {
             'aspect': [
                 {
@@ -911,8 +851,7 @@ def get_default_config(previous_config=None):
             'stroke': [{ 'stroke': ['none', *scale_color()] }],
             'forced-color-adjust': [{ 'forced-color-adjust': ['auto', 'none'] }],
         },
-        
-        # Conflicting class groups
+
         'conflicting_class_groups': {
             'overflow': ['overflow-x', 'overflow-y'],
             'overscroll': ['overscroll-x', 'overscroll-y'],
@@ -1016,15 +955,13 @@ def get_default_config(previous_config=None):
             'touch-y': ['touch'],
             'touch-pz': ['touch'],
         },
-        
-        # Conflicting class group modifiers
+
         'conflicting_class_group_modifiers': {
-        'font-size': ['leading'],
+            'font-size': ['leading'],
         },
-        
-        # Order sensitive modifiers
+
         'order_sensitive_modifiers': [
-        'before',
+            'before',
             'after',
             'placeholder',
             'file',

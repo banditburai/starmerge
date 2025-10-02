@@ -9,7 +9,7 @@ This test file verifies the behavior of theme extension functionality in tailwin
 """
 
 import pytest
-from tw_merge import tw_merge, extend_tailwind_merge, from_theme
+from starmerge import merge, extend_tailwind_merge, from_theme
 
 
 def test_theme_scale_can_be_extended():
