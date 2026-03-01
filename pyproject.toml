@@ -1,6 +1,6 @@
 [project]
 name = "starmerge"
-version = "0.2.0"
+version = "0.2.1"
 description = "A comprehensive Python port of tailwind-merge - intelligently merge Tailwind CSS classes"
 readme = "README.md"
 authors = [
