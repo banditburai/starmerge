@@ -56,8 +56,9 @@ jobs:
 
     - name: Test package installation
       run: |
-        uv pip install dist/*.whl --system
-        python -c "import starmerge; print(f'starmerge {starmerge.__version__} installed successfully')"
+        uv venv /tmp/test-install
+        uv pip install dist/*.whl --python /tmp/test-install/bin/python
+        /tmp/test-install/bin/python -c "import starmerge; print(f'starmerge {starmerge.__version__} installed successfully')"
 
   quality-check:
     name: ✅ Quality Gate
