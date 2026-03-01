@@ -1,0 +1,109 @@
+name: 🏷️ Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Release type"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  create-release:
+    name: 🏷️ Bump Version and Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.RELEASE_TOKEN }}
+
+    - name: Configure Git
+      run: |
+        git config user.name "${{ github.actor }}"
+        git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+    - name: Get current version
+      id: current
+      run: |
+        version=$(grep "^version = " pyproject.toml | cut -d'"' -f2)
+        if [ -z "$version" ]; then
+          echo "❌ Error: Could not extract version from pyproject.toml"
+          exit 1
+        fi
+        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "📦 Current version: $version"
+
+    - name: Calculate next version
+      id: next
+      run: |
+        IFS='.' read -r major minor patch <<< "${{ steps.current.outputs.version }}"
+        case "${{ inputs.release_type }}" in
+          major) major=$((major + 1)); minor=0; patch=0 ;;
+          minor) minor=$((minor + 1)); patch=0 ;;
+          patch) patch=$((patch + 1)) ;;
+        esac
+        version="$major.$minor.$patch"
+        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "🚀 Next version: $version (${{ inputs.release_type }} bump)"
+
+    - name: Check if tag already exists
+      run: |
+        if git rev-parse "v${{ steps.next.outputs.version }}" >/dev/null 2>&1; then
+          echo "❌ Tag v${{ steps.next.outputs.version }} already exists!"
+          exit 1
+        fi
+        echo "✅ Tag v${{ steps.next.outputs.version }} does not exist yet"
+
+    - name: Update version in pyproject.toml
+      run: |
+        sed -i "s/^version = \".*\"/version = \"${{ steps.next.outputs.version }}\"/" pyproject.toml
+        echo "✅ Updated pyproject.toml to ${{ steps.next.outputs.version }}"
+        grep '^version' pyproject.toml
+
+    - name: Commit version bump
+      run: |
+        git add pyproject.toml
+        git commit -m "chore: bump version to ${{ steps.next.outputs.version }}"
+
+    - name: Generate release notes
+      id: notes
+      run: |
+        prev_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        if [ -n "$prev_tag" ]; then
+          NOTES=$(git log "${prev_tag}..HEAD" --pretty=format:"- %s" --no-merges | grep -v "chore: " | head -20)
+        else
+          NOTES="Initial release of StarMerge"
+        fi
+        echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+        echo "$NOTES" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    - name: Create and push tag
+      run: |
+        git tag -a "v${{ steps.next.outputs.version }}" \
+          -m "Release v${{ steps.next.outputs.version }} (${{ inputs.release_type }} release)
+
+        $RELEASE_NOTES"
+        git push origin main
+        git push origin "v${{ steps.next.outputs.version }}"
+
+    - name: Summary
+      run: |
+        echo "## 🏷️ Release v${{ steps.next.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Bump**: ${{ inputs.release_type }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Previous**: v${{ steps.current.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **New**: v${{ steps.next.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "The \`release.yml\` workflow will now automatically publish to PyPI." >> $GITHUB_STEP_SUMMARY

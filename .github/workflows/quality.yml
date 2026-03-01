@@ -1,0 +1,75 @@
+name: ✅ Quality Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-test:
+    name: "Python ${{ matrix.python-version }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      run: uv python install ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: uv sync --group dev
+
+    - name: Ruff check
+      run: uv run ruff check .
+
+    - name: Ruff format check
+      run: uv run ruff format --check .
+
+    - name: Pyright
+      run: uv run pyright
+
+    - name: Run tests with coverage
+      run: uv run pytest tests/ -q --tb=short --cov=starmerge --cov-report=xml
+
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.12'
+      uses: codecov/codecov-action@v4
+      with:
+        files: coverage.xml
+        fail_ci_if_not_found: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Build package
+      run: uv build
+
+    - name: Test package installation
+      run: |
+        uv venv /tmp/test-install
+        uv pip install dist/*.whl --python /tmp/test-install/bin/python
+        /tmp/test-install/bin/python -c "import starmerge; print(f'starmerge {starmerge.__version__} installed successfully')"
+
+  quality-check:
+    name: ✅ Quality Gate
+    needs: [lint-and-test]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Check results
+      run: |
+        if [ "${{ needs.lint-and-test.result }}" != "success" ]; then
+          echo "❌ Quality checks failed"
+          exit 1
+        fi
+        echo "✅ All quality checks passed"

@@ -1,32 +1,31 @@
-"""Create Tailwind Merge function generator for merging class lists."""
+from collections.abc import Callable
+from typing import Any
 
-from typing import Any, Callable, List, TypeVar, Dict, cast
-
-from starmerge.lib.config_utils import create_config_utils, ConfigUtils
+from starmerge.lib.config_utils import create_config_utils
 from starmerge.lib.merge_classlist import merge_class_list
-from starmerge.lib.tw_join import tw_join, ClassNameValue
-from starmerge.lib.types import AnyConfig
+from starmerge.lib.tw_join import ClassNameValue, tw_join
+from starmerge.lib.types import AnyConfig, TailwindMerge
 
-CreateConfigFirst = Callable[[], AnyConfig]
-CreateConfigSubsequent = Callable[[AnyConfig], AnyConfig]
-TailwindMerge = Callable[..., str]
+type CreateConfigFirst = Callable[[], AnyConfig]
+type CreateConfigSubsequent = Callable[[AnyConfig], AnyConfig]
 
 
-class ConfigUtilsWrapper:
-    """Wrapper class for ConfigUtils dictionary to allow attribute access."""
+class _ConfigUtilsWrapper:
+    __slots__ = ("_d",)
 
-    def __init__(self, config_utils_dict: Dict[str, Any]):
-        self.config_utils_dict = config_utils_dict
+    def __init__(self, config_utils_dict: dict[str, Any]):
+        self._d = config_utils_dict
 
     def __getattr__(self, name: str) -> Any:
-        if name in self.config_utils_dict:
-            return self.config_utils_dict[name]
-        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+        try:
+            return self._d[name]
+        except KeyError:
+            raise AttributeError(name) from None
 
 
 def create_tailwind_merge(
     create_config_first: CreateConfigFirst,
-    *create_config_rest: CreateConfigSubsequent
+    *create_config_rest: CreateConfigSubsequent,
 ) -> TailwindMerge:
     config_utils_wrapper = None
     cache_get = None
@@ -40,22 +39,19 @@ def create_tailwind_merge(
             config = create_config_current(config)
 
         config_utils_dict = create_config_utils(config)
-        config_utils_wrapper = ConfigUtilsWrapper(config_utils_dict)
-        cache_get = config_utils_dict['cache'].get
-        cache_set = config_utils_dict['cache'].set
+        config_utils_wrapper = _ConfigUtilsWrapper(config_utils_dict)
+        cache_get = config_utils_dict["cache"].get
+        cache_set = config_utils_dict["cache"].set
         function_to_call = tailwind_merge
 
         return tailwind_merge(class_list)
 
     def tailwind_merge(class_list: str) -> str:
         cached_result = cache_get(class_list)
-
-        if cached_result:
+        if cached_result is not None:
             return cached_result
-
         result = merge_class_list(class_list, config_utils_wrapper)
         cache_set(class_list, result)
-
         return result
 
     def call_tailwind_merge(*args: ClassNameValue) -> str:
