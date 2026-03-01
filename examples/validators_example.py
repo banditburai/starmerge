@@ -6,10 +6,10 @@ to validate different types of Tailwind CSS class values.
 """
 
 from starmerge.lib.validators import (
-    is_arbitrary_value,
     is_arbitrary_length,
     is_arbitrary_number,
     is_arbitrary_position,
+    is_arbitrary_value,
     is_fraction,
     is_integer,
     is_number,
@@ -22,24 +22,24 @@ def main():
     """Run the example."""
     print("Tailwind Merge Validators Example")
     print("=================================")
-    
+
     test_values = [
-        "100px",              # A length
-        "50%",                # A percentage
-        "1/2",                # A fraction
-        "md",                 # A t-shirt size
-        "123",                # A number
-        "3.14",               # A decimal number
-        "[200px]",            # An arbitrary length value
+        "100px",  # A length
+        "50%",  # A percentage
+        "1/2",  # A fraction
+        "md",  # A t-shirt size
+        "123",  # A number
+        "3.14",  # A decimal number
+        "[200px]",  # An arbitrary length value
         "[length:var(--size)]",  # An arbitrary length with label
-        "[number:10]",        # An arbitrary number with label
+        "[number:10]",  # An arbitrary number with label
         "[position:center]",  # An arbitrary position with label
-        "url(image.jpg)",     # An image URL
-        "[url:var(--image)]", # An arbitrary image with label
-        "rgb(255, 0, 0)",     # A color function
+        "url(image.jpg)",  # An image URL
+        "[url:var(--image)]",  # An arbitrary image with label
+        "rgb(255, 0, 0)",  # A color function
         "[0_35px_60px_-15px_rgba(0,0,0,0.3)]",  # A shadow value
     ]
-    
+
     # Test each value with different validators
     for value in test_values:
         print(f"\nValue: '{value}'")
@@ -55,4 +55,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

@@ -26,32 +26,46 @@ def merge_class_list(class_list: str, config_utils: ConfigUtils) -> str:
         parsed = parse_class_name(original_class_name)
 
         if parsed.is_external:
-            result = f"{original_class_name} {result}" if result else original_class_name
+            result = (
+                f"{original_class_name} {result}" if result else original_class_name
+            )
             continue
 
         has_postfix_modifier = parsed.maybe_postfix_modifier_position is not None
         base_class_name = parsed.base_class_name
 
         if has_postfix_modifier:
-            class_group_id = get_class_group_id(base_class_name[:parsed.maybe_postfix_modifier_position])
+            class_group_id = get_class_group_id(
+                base_class_name[: parsed.maybe_postfix_modifier_position]
+            )
         else:
             class_group_id = get_class_group_id(base_class_name)
 
         if not class_group_id:
             if not has_postfix_modifier:
-                result = f"{original_class_name} {result}" if result else original_class_name
+                result = (
+                    f"{original_class_name} {result}" if result else original_class_name
+                )
                 continue
 
             class_group_id = get_class_group_id(base_class_name)
 
             if not class_group_id:
-                result = f"{original_class_name} {result}" if result else original_class_name
+                result = (
+                    f"{original_class_name} {result}" if result else original_class_name
+                )
                 continue
 
             has_postfix_modifier = False
 
-        variant_modifier = ":".join(sort_modifiers(parsed.modifiers)) if parsed.modifiers else ""
-        modifier_id = variant_modifier + IMPORTANT_MODIFIER if parsed.has_important_modifier else variant_modifier
+        variant_modifier = (
+            ":".join(sort_modifiers(parsed.modifiers)) if parsed.modifiers else ""
+        )
+        modifier_id = (
+            variant_modifier + IMPORTANT_MODIFIER
+            if parsed.has_important_modifier
+            else variant_modifier
+        )
         class_id = modifier_id + class_group_id
 
         if class_id in class_groups_in_conflict:
@@ -59,7 +73,9 @@ def merge_class_list(class_list: str, config_utils: ConfigUtils) -> str:
 
         class_groups_in_conflict.add(class_id)
 
-        for conflict_group in get_conflicting_class_group_ids(class_group_id, has_postfix_modifier):
+        for conflict_group in get_conflicting_class_group_ids(
+            class_group_id, has_postfix_modifier
+        ):
             class_groups_in_conflict.add(modifier_id + conflict_group)
 
         result = f"{original_class_name} {result}" if result else original_class_name

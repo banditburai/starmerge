@@ -17,8 +17,10 @@ tailwind_merge = _create_tailwind_merge()
 @overload
 def merge(*args: str) -> str: ...
 
+
 @overload
 def merge(class_list: list[Any]) -> str: ...
+
 
 def merge(*args: Any) -> str:
     if not args:

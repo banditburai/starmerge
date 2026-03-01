@@ -3,7 +3,7 @@ from typing import Any
 
 from starmerge.lib.config_utils import create_config_utils
 from starmerge.lib.merge_classlist import merge_class_list
-from starmerge.lib.tw_join import tw_join, ClassNameValue
+from starmerge.lib.tw_join import ClassNameValue, tw_join
 from starmerge.lib.types import AnyConfig, TailwindMerge
 
 type CreateConfigFirst = Callable[[], AnyConfig]
@@ -11,7 +11,7 @@ type CreateConfigSubsequent = Callable[[AnyConfig], AnyConfig]
 
 
 class _ConfigUtilsWrapper:
-    __slots__ = ('_d',)
+    __slots__ = ("_d",)
 
     def __init__(self, config_utils_dict: dict[str, Any]):
         self._d = config_utils_dict
@@ -40,8 +40,8 @@ def create_tailwind_merge(
 
         config_utils_dict = create_config_utils(config)
         config_utils_wrapper = _ConfigUtilsWrapper(config_utils_dict)
-        cache_get = config_utils_dict['cache'].get
-        cache_set = config_utils_dict['cache'].set
+        cache_get = config_utils_dict["cache"].get
+        cache_set = config_utils_dict["cache"].set
         function_to_call = tailwind_merge
 
         return tailwind_merge(class_list)

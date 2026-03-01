@@ -46,6 +46,7 @@ class DefaultLruCache[K, V]:
 class EmptyLruCache[K, V]:
     def get(self, key: K) -> V | None:
         return None
+
     def set(self, key: K, value: V) -> None:
         pass
 

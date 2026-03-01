@@ -1,14 +1,18 @@
 from collections.abc import Callable
 
-from starmerge.lib.types import AnyConfig, ParsedClassName, ExperimentalParseClassNameParam
+from starmerge.lib.types import (
+    AnyConfig,
+    ExperimentalParseClassNameParam,
+    ParsedClassName,
+)
 
-IMPORTANT_MODIFIER = '!'
-MODIFIER_SEPARATOR = ':'
+IMPORTANT_MODIFIER = "!"
+MODIFIER_SEPARATOR = ":"
 
 
 def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassName]:
-    prefix = config.get('prefix')
-    experimental_parse_class_name = config.get('experimental_parse_class_name')
+    prefix = config.get("prefix")
+    experimental_parse_class_name = config.get("experimental_parse_class_name")
 
     def parse_class_name(class_name: str) -> ParsedClassName:
         modifiers = []
@@ -26,17 +30,17 @@ def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassNam
                     modifier_start = index + 1
                     continue
 
-                if char == '/':
+                if char == "/":
                     postfix_modifier_position = index
                     continue
 
-            if char == '[':
+            if char == "[":
                 bracket_depth += 1
-            elif char == ']':
+            elif char == "]":
                 bracket_depth -= 1
-            elif char == '(':
+            elif char == "(":
                 paren_depth += 1
-            elif char == ')':
+            elif char == ")":
                 paren_depth -= 1
 
         base_with_important = (
@@ -46,7 +50,8 @@ def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassNam
         has_important_modifier = base_class_name != base_with_important
         maybe_postfix_modifier_position = (
             postfix_modifier_position - modifier_start
-            if postfix_modifier_position is not None and postfix_modifier_position > modifier_start
+            if postfix_modifier_position is not None
+            and postfix_modifier_position > modifier_start
             else None
         )
 
@@ -63,7 +68,7 @@ def create_parse_class_name(config: AnyConfig) -> Callable[[str], ParsedClassNam
 
         def parse_class_name_with_prefix(class_name: str) -> ParsedClassName:
             if class_name.startswith(full_prefix):
-                return parse_class_name_original(class_name[len(full_prefix):])
+                return parse_class_name_original(class_name[len(full_prefix) :])
             return ParsedClassName(
                 modifiers=[],
                 has_important_modifier=False,

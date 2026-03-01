@@ -68,14 +68,28 @@ def test_mergeconfigs_has_correct_behavior():
     assert result["theme"]["hi"] == ["ho"]
     assert result["theme"]["themeToOverride"] == ["overridden"]
 
-    assert result["class_groups"]["fooKey"] == [{"fooKey": ["one", "two"]}, {"fooKey": ["bar", "baz"]}]
+    assert result["class_groups"]["fooKey"] == [
+        {"fooKey": ["one", "two"]},
+        {"fooKey": ["bar", "baz"]},
+    ]
     assert result["class_groups"]["bla"] == [{"bli": ["blub", "blublub"]}]
     assert result["class_groups"]["fooKey2"] == [{"fooKey": ["qux", "quux"]}]
     assert result["class_groups"]["otherKey"] == ["nother", "group"]
-    assert result["class_groups"]["groupToOverride"] == ["I", "overrode", "you", "extended"]
+    assert result["class_groups"]["groupToOverride"] == [
+        "I",
+        "overrode",
+        "you",
+        "extended",
+    ]
 
     assert "groupToOverride2" in result["class_groups"]
-    assert result["class_groups"]["groupToOverride2"] == ["this", "will", "not", "be", "overridden"]
+    assert result["class_groups"]["groupToOverride2"] == [
+        "this",
+        "will",
+        "not",
+        "be",
+        "overridden",
+    ]
 
     assert result["conflicting_class_groups"]["toOverride"] == ["groupOverridden"]
     assert result["conflicting_class_groups"]["fooKey"] == ["otherKey"]

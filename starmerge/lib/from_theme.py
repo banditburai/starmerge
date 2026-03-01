@@ -2,7 +2,7 @@ from starmerge.lib.types import AnyThemeGroupIds, ClassGroup, ThemeObject
 
 
 class _ThemeGetter:
-    __slots__ = ('key',)
+    __slots__ = ("key",)
     is_theme_getter: bool = True
 
     def __init__(self, key: AnyThemeGroupIds) -> None:

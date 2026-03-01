@@ -100,8 +100,12 @@ def print_summary(
 
 def main():
     parser = argparse.ArgumentParser(description="Run StarMerge benchmarks")
-    parser.add_argument("--compare", action="store_true", help="Compare with last saved results")
-    parser.add_argument("--save", action="store_true", help="Save results to .results.json")
+    parser.add_argument(
+        "--compare", action="store_true", help="Compare with last saved results"
+    )
+    parser.add_argument(
+        "--save", action="store_true", help="Save results to .results.json"
+    )
     args = parser.parse_args()
 
     previous = None

@@ -1,7 +1,8 @@
 """Benchmarks for StarMerge internal hot path components (uncached)."""
 
-import time
 import statistics
+import time
+
 from starmerge import get_default_config
 from starmerge.lib.class_group_utils import _create_class_map, create_class_group_utils
 from starmerge.lib.config_utils import create_config_utils
@@ -44,20 +45,29 @@ def main():
         ("2 classes, no conflict", "p-4 text-red-500"),
         ("2 classes, conflict", "p-4 p-2"),
         ("5 classes, mixed", "p-4 px-2 pt-3 text-red-500 bg-blue-200"),
-        ("8 classes, typical", (
-            "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold "
-            "hover:text-green-300 focus:ring-2"
-        )),
-        ("10 classes", (
-            "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold "
-            "hover:text-green-300 focus:ring-2 sm:p-6 md:text-lg"
-        )),
-        ("20 classes", (
-            "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold "
-            "hover:text-green-300 focus:ring-2 sm:p-6 md:text-lg "
-            "w-full h-screen flex items-center justify-center "
-            "gap-4 rounded-lg shadow-md border border-gray-200"
-        )),
+        (
+            "8 classes, typical",
+            (
+                "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold "
+                "hover:text-green-300 focus:ring-2"
+            ),
+        ),
+        (
+            "10 classes",
+            (
+                "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold "
+                "hover:text-green-300 focus:ring-2 sm:p-6 md:text-lg"
+            ),
+        ),
+        (
+            "20 classes",
+            (
+                "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold "
+                "hover:text-green-300 focus:ring-2 sm:p-6 md:text-lg "
+                "w-full h-screen flex items-center justify-center "
+                "gap-4 rounded-lg shadow-md border border-gray-200"
+            ),
+        ),
         ("5 all conflicts", "p-1 p-2 p-3 p-4 p-5"),
         ("non-tailwind classes", "custom-class my-thing other-class foo bar"),
     ]
@@ -73,7 +83,10 @@ def main():
     bench("3 modifiers", lambda: sort_mods(["sm", "hover", "focus"]))
     bench("5 modifiers", lambda: sort_mods(["sm", "md", "hover", "focus", "active"]))
     bench("3 with order-sensitive", lambda: sort_mods(["hover", "[&>*]", "focus"]))
-    bench("5 with 2 order-sensitive", lambda: sort_mods(["sm", "[&>*]", "hover", "[&:nth-child(2)]", "focus"]))
+    bench(
+        "5 with 2 order-sensitive",
+        lambda: sort_mods(["sm", "[&>*]", "hover", "[&:nth-child(2)]", "focus"]),
+    )
 
     print()
 
@@ -93,11 +106,21 @@ def main():
     # --- parse_class_name (sequential realistic parsing) ---
     print("[ parse_class_name ]")
     realistic_classes = [
-        "p-4", "hover:text-red-500", "sm:flex", "md:hover:bg-blue-200",
-        "focus:ring-2", "[color:red]", "bg-red-500/50", "text-lg!",
-        "sm:hover:focus:p-4!", "dark:md:hover:text-white",
+        "p-4",
+        "hover:text-red-500",
+        "sm:flex",
+        "md:hover:bg-blue-200",
+        "focus:ring-2",
+        "[color:red]",
+        "bg-red-500/50",
+        "text-lg!",
+        "sm:hover:focus:p-4!",
+        "dark:md:hover:text-white",
     ]
-    bench("10 realistic classes (sequential)", lambda: [parse(c) for c in realistic_classes])
+    bench(
+        "10 realistic classes (sequential)",
+        lambda: [parse(c) for c in realistic_classes],
+    )
     bench("simple 'p-4'", lambda: parse("p-4"))
     bench("modifier 'hover:p-4'", lambda: parse("hover:p-4"))
     bench("deep 'sm:hover:focus:p-4!'", lambda: parse("sm:hover:focus:p-4!"))
@@ -114,30 +137,42 @@ def main():
 
     # --- Real-world patterns ---
     print("[ Real-world patterns ]")
-    bench("deeply nested modifiers", lambda: merge_class_list(
-        "sm:hover:focus:active:p-4 sm:hover:focus:active:p-2 "
-        "md:dark:hover:text-white md:dark:hover:text-black "
-        "lg:focus-visible:ring-2 lg:focus-visible:ring-4",
-        config_utils,
-    ))
-    bench("heavy conflict scenario", lambda: merge_class_list(
-        "p-1 p-2 p-3 p-4 p-5 m-1 m-2 m-3 m-4 m-5 "
-        "text-xs text-sm text-base text-lg text-xl "
-        "font-thin font-light font-normal font-medium font-bold",
-        config_utils,
-    ))
-    bench("responsive utility-heavy", lambda: merge_class_list(
-        "w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 "
-        "p-2 sm:p-4 md:p-6 lg:p-8 xl:p-10 "
-        "text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl "
-        "flex sm:grid md:block lg:inline-flex xl:inline-grid",
-        config_utils,
-    ))
-    bench("arbitrary values mix", lambda: merge_class_list(
-        "p-[10px] m-[20px] text-[14px] bg-[#ff0000] w-[calc(100%-20px)] "
-        "h-[var(--height)] border-[length:2px] [color:blue]",
-        config_utils,
-    ))
+    bench(
+        "deeply nested modifiers",
+        lambda: merge_class_list(
+            "sm:hover:focus:active:p-4 sm:hover:focus:active:p-2 "
+            "md:dark:hover:text-white md:dark:hover:text-black "
+            "lg:focus-visible:ring-2 lg:focus-visible:ring-4",
+            config_utils,
+        ),
+    )
+    bench(
+        "heavy conflict scenario",
+        lambda: merge_class_list(
+            "p-1 p-2 p-3 p-4 p-5 m-1 m-2 m-3 m-4 m-5 "
+            "text-xs text-sm text-base text-lg text-xl "
+            "font-thin font-light font-normal font-medium font-bold",
+            config_utils,
+        ),
+    )
+    bench(
+        "responsive utility-heavy",
+        lambda: merge_class_list(
+            "w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 "
+            "p-2 sm:p-4 md:p-6 lg:p-8 xl:p-10 "
+            "text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl "
+            "flex sm:grid md:block lg:inline-flex xl:inline-grid",
+            config_utils,
+        ),
+    )
+    bench(
+        "arbitrary values mix",
+        lambda: merge_class_list(
+            "p-[10px] m-[20px] text-[14px] bg-[#ff0000] w-[calc(100%-20px)] "
+            "h-[var(--height)] border-[length:2px] [color:blue]",
+            config_utils,
+        ),
+    )
 
     print()
 

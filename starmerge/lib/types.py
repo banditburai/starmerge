@@ -15,6 +15,7 @@ type ThemeObject = dict[str, ClassGroup]
 
 class ThemeGetter(Protocol):
     is_theme_getter: bool
+
     def __call__(self, theme: ThemeObject) -> ClassGroup: ...
 
 
@@ -38,7 +39,9 @@ class ExperimentalParseClassNameParam(TypedDict):
 class ConfigStaticPart(TypedDict):
     cache_size: int
     prefix: NotRequired[str]
-    experimental_parse_class_name: NotRequired[Callable[[ExperimentalParseClassNameParam], ParsedClassName]]
+    experimental_parse_class_name: NotRequired[
+        Callable[[ExperimentalParseClassNameParam], ParsedClassName]
+    ]
     separator: NotRequired[str]
 
 
@@ -64,7 +67,9 @@ class PartialConfigGroupsPart(TypedDict, total=False):
 class ConfigExtension(TypedDict, total=False):
     cache_size: int
     prefix: str
-    experimental_parse_class_name: Callable[[ExperimentalParseClassNameParam], ParsedClassName]
+    experimental_parse_class_name: Callable[
+        [ExperimentalParseClassNameParam], ParsedClassName
+    ]
     separator: str
     override: PartialConfigGroupsPart
     extend: PartialConfigGroupsPart

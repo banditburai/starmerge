@@ -14,6 +14,6 @@ def test_lazy_initialization():
     assert init_mock.call_count == 1
 
     tailwind_merge()
-    tailwind_merge('')
-    tailwind_merge('px-2 p-3 p-4')
+    tailwind_merge("")
+    tailwind_merge("px-2 p-3 p-4")
     assert init_mock.call_count == 1

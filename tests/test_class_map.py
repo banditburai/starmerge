@@ -1,103 +1,250 @@
-from starmerge.lib.default_config import get_default_config
 from starmerge.lib.class_group_utils import _create_class_map as create_class_map
+from starmerge.lib.default_config import get_default_config
 
 
 def test_class_map_has_correct_class_groups_at_first_part():
     class_map = create_class_map(get_default_config())
-    
+
     class_groups_by_first_part = {}
     for key, value in class_map.next_part.items():
-        class_groups_by_first_part[key] = sorted(list(get_class_groups_in_class_part(value)))
-    
+        class_groups_by_first_part[key] = sorted(get_class_groups_in_class_part(value))
+
     assert class_map.class_group_id is None
     assert len(class_map.validators) == 0
-    
+
     # Test key items individually to make debugging easier
-    assert 'absolute' in class_groups_by_first_part
-    assert class_groups_by_first_part['absolute'] == ['position']
-    
-    assert 'backdrop' in class_groups_by_first_part
-    assert set(class_groups_by_first_part['backdrop']) == {
-        'backdrop-blur',
-        'backdrop-brightness',
-        'backdrop-contrast',
-        'backdrop-filter',
-        'backdrop-grayscale',
-        'backdrop-hue-rotate',
-        'backdrop-invert',
-        'backdrop-opacity',
-        'backdrop-saturate',
-        'backdrop-sepia',
+    assert "absolute" in class_groups_by_first_part
+    assert class_groups_by_first_part["absolute"] == ["position"]
+
+    assert "backdrop" in class_groups_by_first_part
+    assert set(class_groups_by_first_part["backdrop"]) == {
+        "backdrop-blur",
+        "backdrop-brightness",
+        "backdrop-contrast",
+        "backdrop-filter",
+        "backdrop-grayscale",
+        "backdrop-hue-rotate",
+        "backdrop-invert",
+        "backdrop-opacity",
+        "backdrop-saturate",
+        "backdrop-sepia",
     }
-    
-    assert 'bg' in class_groups_by_first_part
+
+    assert "bg" in class_groups_by_first_part
     bg_expected = {
-        'bg-attachment',
-        'bg-blend',
-        'bg-clip',
-        'bg-color',
-        'bg-image',
-        'bg-origin',
-        'bg-position',
-        'bg-repeat',
-        'bg-size',
+        "bg-attachment",
+        "bg-blend",
+        "bg-clip",
+        "bg-color",
+        "bg-image",
+        "bg-origin",
+        "bg-position",
+        "bg-repeat",
+        "bg-size",
     }
-    assert set(class_groups_by_first_part['bg']) == bg_expected or set(class_groups_by_first_part['bg']) == (bg_expected | {'bg-opacity'})
-    
-    assert 'font' in class_groups_by_first_part
-    font_expected = {'font-family', 'font-weight'}
-    assert set(class_groups_by_first_part['font']) == font_expected or set(class_groups_by_first_part['font']) == (font_expected | {'font-stretch'})
-    
-    assert 'text' in class_groups_by_first_part
+    assert set(class_groups_by_first_part["bg"]) == bg_expected or set(
+        class_groups_by_first_part["bg"]
+    ) == (bg_expected | {"bg-opacity"})
+
+    assert "font" in class_groups_by_first_part
+    font_expected = {"font-family", "font-weight"}
+    assert set(class_groups_by_first_part["font"]) == font_expected or set(
+        class_groups_by_first_part["font"]
+    ) == (font_expected | {"font-stretch"})
+
+    assert "text" in class_groups_by_first_part
     text_expected = {
-        'font-size',
-        'text-alignment',
-        'text-color',
-        'text-overflow',
-        'text-wrap',
+        "font-size",
+        "text-alignment",
+        "text-color",
+        "text-overflow",
+        "text-wrap",
     }
-    assert set(class_groups_by_first_part['text']) == text_expected or set(class_groups_by_first_part['text']) == (text_expected | {'text-opacity'})
-    
-    assert 'transform' in class_groups_by_first_part
-    transform_expected = {'transform'}
-    assert set(class_groups_by_first_part['transform']) == transform_expected or set(class_groups_by_first_part['transform']) == (transform_expected | {'transform-style'})
-    
+    assert set(class_groups_by_first_part["text"]) == text_expected or set(
+        class_groups_by_first_part["text"]
+    ) == (text_expected | {"text-opacity"})
+
+    assert "transform" in class_groups_by_first_part
+    transform_expected = {"transform"}
+    assert set(class_groups_by_first_part["transform"]) == transform_expected or set(
+        class_groups_by_first_part["transform"]
+    ) == (transform_expected | {"transform-style"})
+
     actual_keys = set(class_groups_by_first_part.keys())
 
     expected_keys = {
-        'absolute', 'accent', 'align', 'animate', 'antialiased', 'appearance', 'aspect', 'auto',
-        'backdrop', 'basis', 'bg', 'block', 'blur', 'border', 'bottom', 'box',
-        'break', 'brightness', 'capitalize', 'caption', 'caret', 'clear', 'col', 'collapse',
-        'columns', 'container', 'content', 'contents', 'contrast', 'cursor', 'decoration',
-        'delay', 'diagonal', 'divide', 'drop', 'duration', 'ease', 'end', 'fill',
-        'filter', 'fixed', 'flex', 'float', 'flow', 'font', 'forced', 'from', 'gap',
-        'grayscale', 'grid', 'grow', 'h', 'hidden', 'hue', 'hyphens', 'indent', 'inline',
-        'inset', 'invert', 'invisible', 'isolate', 'isolation', 'italic', 'items', 'justify',
-        'leading', 'left', 'line', 'lining', 'list', 'lowercase', 'm', 'max', 'mb', 'me',
-        'min', 'mix', 'ml', 'mr', 'ms', 'mt', 'mx', 'my', 'no', 'normal', 'not', 'object',
-        'oldstyle', 'opacity', 'order', 'ordinal', 'origin', 'outline', 'overflow', 'overline',
-        'overscroll', 'p', 'pb', 'pe', 'pl', 'place', 'placeholder', 'pointer',
-        'pr', 'proportional', 'ps', 'pt', 'px', 'py', 'relative', 'resize', 'right', 'ring',
-        'rotate', 'rounded', 'row', 'saturate', 'scale', 'scroll', 'select', 'self',
-        'sepia', 'shadow', 'shrink', 'size', 'skew', 'slashed', 'snap', 'space', 'sr',
-        'stacked', 'start', 'static', 'sticky', 'stroke', 'subpixel', 'table', 'tabular',
-        'text', 'to', 'top', 'touch', 'tracking', 'transform', 'transition', 'translate',
-        'truncate', 'underline', 'uppercase', 'via', 'visible', 'w', 'whitespace', 'will', 'z'
+        "absolute",
+        "accent",
+        "align",
+        "animate",
+        "antialiased",
+        "appearance",
+        "aspect",
+        "auto",
+        "backdrop",
+        "basis",
+        "bg",
+        "block",
+        "blur",
+        "border",
+        "bottom",
+        "box",
+        "break",
+        "brightness",
+        "capitalize",
+        "caption",
+        "caret",
+        "clear",
+        "col",
+        "collapse",
+        "columns",
+        "container",
+        "content",
+        "contents",
+        "contrast",
+        "cursor",
+        "decoration",
+        "delay",
+        "diagonal",
+        "divide",
+        "drop",
+        "duration",
+        "ease",
+        "end",
+        "fill",
+        "filter",
+        "fixed",
+        "flex",
+        "float",
+        "flow",
+        "font",
+        "forced",
+        "from",
+        "gap",
+        "grayscale",
+        "grid",
+        "grow",
+        "h",
+        "hidden",
+        "hue",
+        "hyphens",
+        "indent",
+        "inline",
+        "inset",
+        "invert",
+        "invisible",
+        "isolate",
+        "isolation",
+        "italic",
+        "items",
+        "justify",
+        "leading",
+        "left",
+        "line",
+        "lining",
+        "list",
+        "lowercase",
+        "m",
+        "max",
+        "mb",
+        "me",
+        "min",
+        "mix",
+        "ml",
+        "mr",
+        "ms",
+        "mt",
+        "mx",
+        "my",
+        "no",
+        "normal",
+        "not",
+        "object",
+        "oldstyle",
+        "opacity",
+        "order",
+        "ordinal",
+        "origin",
+        "outline",
+        "overflow",
+        "overline",
+        "overscroll",
+        "p",
+        "pb",
+        "pe",
+        "pl",
+        "place",
+        "placeholder",
+        "pointer",
+        "pr",
+        "proportional",
+        "ps",
+        "pt",
+        "px",
+        "py",
+        "relative",
+        "resize",
+        "right",
+        "ring",
+        "rotate",
+        "rounded",
+        "row",
+        "saturate",
+        "scale",
+        "scroll",
+        "select",
+        "self",
+        "sepia",
+        "shadow",
+        "shrink",
+        "size",
+        "skew",
+        "slashed",
+        "snap",
+        "space",
+        "sr",
+        "stacked",
+        "start",
+        "static",
+        "sticky",
+        "stroke",
+        "subpixel",
+        "table",
+        "tabular",
+        "text",
+        "to",
+        "top",
+        "touch",
+        "tracking",
+        "transform",
+        "transition",
+        "translate",
+        "truncate",
+        "underline",
+        "uppercase",
+        "via",
+        "visible",
+        "w",
+        "whitespace",
+        "will",
+        "z",
     }
-    
-    assert expected_keys.issubset(actual_keys), f"Missing keys: {sorted(expected_keys - actual_keys)}"
+
+    assert expected_keys.issubset(actual_keys), (
+        f"Missing keys: {sorted(expected_keys - actual_keys)}"
+    )
 
 
 def get_class_groups_in_class_part(class_part):
     class_groups = set()
-    
+
     if class_part.class_group_id:
         class_groups.add(class_part.class_group_id)
-    
+
     for validator in class_part.validators:
         class_groups.add(validator.class_group_id)
-    
+
     for next_class_part in class_part.next_part.values():
         class_groups.update(get_class_groups_in_class_part(next_class_part))
-    
+
     return class_groups

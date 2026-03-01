@@ -1,17 +1,19 @@
 import re
 from collections.abc import Callable
 
-_ARBITRARY_VALUE_RE = re.compile(r'^\[(?:(\w[\w-]*):)?(.+)\]$', re.IGNORECASE)
-_ARBITRARY_VARIABLE_RE = re.compile(r'^\((?:(\w[\w-]*):)?(.+)\)$', re.IGNORECASE)
-_FRACTION_RE = re.compile(r'^\d+\/\d+$')
-_TSHIRT_RE = re.compile(r'^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$')
+_ARBITRARY_VALUE_RE = re.compile(r"^\[(?:(\w[\w-]*):)?(.+)\]$", re.IGNORECASE)
+_ARBITRARY_VARIABLE_RE = re.compile(r"^\((?:(\w[\w-]*):)?(.+)\)$", re.IGNORECASE)
+_FRACTION_RE = re.compile(r"^\d+\/\d+$")
+_TSHIRT_RE = re.compile(r"^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$")
 _LENGTH_UNIT_RE = re.compile(
-    r'\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|\b(calc|min|max|clamp)\(.+\)$'
+    r"\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|\b(calc|min|max|clamp)\(.+\)$"
 )
-_COLOR_FN_RE = re.compile(r'^(rgba?|hsla?|hwb|(ok)?(lab|lch))\(.+\)$')
-_SHADOW_RE = re.compile(r'^(inset_)?-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)')
+_COLOR_FN_RE = re.compile(r"^(rgba?|hsla?|hwb|(ok)?(lab|lch))\(.+\)$")
+_SHADOW_RE = re.compile(
+    r"^(inset_)?-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)"
+)
 _IMAGE_RE = re.compile(
-    r'^(url|image|image-set|cross-fade|element|(repeating-)?(linear|radial|conic)-gradient)\(.+\)$'
+    r"^(url|image|image-set|cross-fade|element|(repeating-)?(linear|radial|conic)-gradient)\(.+\)$"
 )
 
 
@@ -32,18 +34,18 @@ def is_number(value: str) -> bool:
 def is_integer(value: str) -> bool:
     if not value:
         return False
-    if '.' in value:
+    if "." in value:
         try:
             return float(value).is_integer()
         except ValueError:
             return False
-    if value.startswith('-'):
+    if value.startswith("-"):
         return value[1:].isdigit()
     return value.isdigit()
 
 
 def is_percent(value: str) -> bool:
-    return ' ' not in value and value.endswith('%') and is_number(value[:-1])
+    return " " not in value and value.endswith("%") and is_number(value[:-1])
 
 
 def is_tshirt_size(value: str) -> bool:
@@ -56,7 +58,7 @@ def is_any(_: str | None = None) -> bool:
 
 def is_length_only(value: str) -> bool:
     # Color function check prevents hsl(0 0% 0%) from being classified as length
-    if value in ('px', 'full', 'screen', '0'):
+    if value in ("px", "full", "screen", "0"):
         return True
     return bool(_LENGTH_UNIT_RE.search(value)) and not bool(_COLOR_FN_RE.match(value))
 
@@ -70,7 +72,7 @@ def is_color(value: str) -> bool:
         return False
     if _COLOR_FN_RE.match(value):
         return True
-    if value.startswith('#') and len(value) in (4, 5, 7, 9):
+    if value.startswith("#") and len(value) in (4, 5, 7, 9):
         try:
             int(value[1:], 16)
             return True
@@ -178,17 +180,17 @@ def _get_is_arbitrary_variable(
 
 
 def _is_label_position(label: str) -> bool:
-    return label == 'position'
+    return label == "position"
 
 
-_IMAGE_LABELS = frozenset({'image', 'url'})
+_IMAGE_LABELS = frozenset({"image", "url"})
 
 
 def _is_label_image(label: str) -> bool:
     return label in _IMAGE_LABELS
 
 
-_SIZE_LABELS = frozenset({'length', 'size', 'percentage'})
+_SIZE_LABELS = frozenset({"length", "size", "percentage"})
 
 
 def _is_label_size(label: str) -> bool:
@@ -196,16 +198,16 @@ def _is_label_size(label: str) -> bool:
 
 
 def _is_label_length(label: str) -> bool:
-    return label == 'length'
+    return label == "length"
 
 
 def _is_label_number(label: str) -> bool:
-    return label == 'number'
+    return label == "number"
 
 
 def _is_label_family_name(label: str) -> bool:
-    return label == 'family-name'
+    return label == "family-name"
 
 
 def _is_label_shadow(label: str) -> bool:
-    return label == 'shadow'
+    return label == "shadow"

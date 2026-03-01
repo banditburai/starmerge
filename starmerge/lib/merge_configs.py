@@ -11,46 +11,52 @@ def merge_configs(
     if callable(config_extension):
         return config_extension(base_config)
 
-    if (cache_size := config_extension.get('cache_size')) is not None:
-        base_config['cache_size'] = cache_size
-    if (prefix := config_extension.get('prefix')) is not None:
-        base_config['prefix'] = prefix
-    if (separator := config_extension.get('separator')) is not None:
-        base_config['separator'] = separator
-    if (experimental := config_extension.get('experimental_parse_class_name')) is not None:
-        base_config['experimental_parse_class_name'] = experimental
+    if (cache_size := config_extension.get("cache_size")) is not None:
+        base_config["cache_size"] = cache_size
+    if (prefix := config_extension.get("prefix")) is not None:
+        base_config["prefix"] = prefix
+    if (separator := config_extension.get("separator")) is not None:
+        base_config["separator"] = separator
+    if (
+        experimental := config_extension.get("experimental_parse_class_name")
+    ) is not None:
+        base_config["experimental_parse_class_name"] = experimental
 
-    override = config_extension.get('override', {})
-    extend = config_extension.get('extend', {})
+    override = config_extension.get("override", {})
+    extend = config_extension.get("extend", {})
 
-    _override_config_properties(base_config.get('theme', {}), override.get('theme', {}))
-    _override_config_properties(base_config.get('class_groups', {}), override.get('class_groups', {}))
+    _override_config_properties(base_config.get("theme", {}), override.get("theme", {}))
     _override_config_properties(
-        base_config.get('conflicting_class_groups', {}),
-        override.get('conflicting_class_groups', {}),
+        base_config.get("class_groups", {}), override.get("class_groups", {})
     )
     _override_config_properties(
-        base_config.get('conflicting_class_group_modifiers', {}),
-        override.get('conflicting_class_group_modifiers', {}),
+        base_config.get("conflicting_class_groups", {}),
+        override.get("conflicting_class_groups", {}),
     )
-    if order_override := override.get('order_sensitive_modifiers'):
-        base_config['order_sensitive_modifiers'] = order_override
+    _override_config_properties(
+        base_config.get("conflicting_class_group_modifiers", {}),
+        override.get("conflicting_class_group_modifiers", {}),
+    )
+    if order_override := override.get("order_sensitive_modifiers"):
+        base_config["order_sensitive_modifiers"] = order_override
 
-    _merge_config_properties(base_config.get('theme', {}), extend.get('theme', {}))
-    _merge_config_properties(base_config.get('class_groups', {}), extend.get('class_groups', {}))
+    _merge_config_properties(base_config.get("theme", {}), extend.get("theme", {}))
     _merge_config_properties(
-        base_config.get('conflicting_class_groups', {}),
-        extend.get('conflicting_class_groups', {}),
+        base_config.get("class_groups", {}), extend.get("class_groups", {})
+    )
+    _merge_config_properties(
+        base_config.get("conflicting_class_groups", {}),
+        extend.get("conflicting_class_groups", {}),
     )
 
-    extend_modifiers = extend.get('conflicting_class_group_modifiers', {})
-    base_modifiers = base_config.get('conflicting_class_group_modifiers', {})
+    extend_modifiers = extend.get("conflicting_class_group_modifiers", {})
+    base_modifiers = base_config.get("conflicting_class_group_modifiers", {})
     for key, value in extend_modifiers.items():
         existing = base_modifiers.setdefault(key, [])
         existing.extend(v for v in value if v not in existing)
 
-    if extend_order := extend.get('order_sensitive_modifiers', []):
-        base_config.setdefault('order_sensitive_modifiers', []).extend(extend_order)
+    if extend_order := extend.get("order_sensitive_modifiers", []):
+        base_config.setdefault("order_sensitive_modifiers", []).extend(extend_order)
 
     return base_config
 

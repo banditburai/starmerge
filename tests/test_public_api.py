@@ -1,12 +1,12 @@
 from starmerge import (
-    merge,
     create_tailwind_merge,
-    get_default_config,
-    validators,
-    merge_configs,
     extend_tailwind_merge,
-    tw_join,
     from_theme,
+    get_default_config,
+    merge,
+    merge_configs,
+    tw_join,
+    validators,
 )
 
 
@@ -14,7 +14,7 @@ def test_has_correct_export_types():
     assert callable(merge)
     assert callable(create_tailwind_merge)
     assert callable(get_default_config)
-    
+
     # Check validators object has all expected methods
     validator_methods = [
         "is_any",
@@ -37,7 +37,7 @@ def test_has_correct_export_types():
         "is_tshirt_size",
         "is_image",
     ]
-    
+
     for method in validator_methods:
         assert callable(getattr(validators, method))
     assert callable(merge_configs)
@@ -46,71 +46,83 @@ def test_has_correct_export_types():
 
 
 def test_twmerge_has_correct_inputs_and_outputs():
-    assert isinstance(merge(''), str)
-    assert isinstance(merge('hello world'), str)
-    assert isinstance(merge('-:-:-:::---h-'), str)
-    assert isinstance(merge('hello world', '-:-:-:::---h-'), str)
-    assert isinstance(merge('hello world', '-:-:-:::---h-', '', 'something'), str)
-    assert isinstance(merge('hello world', None), str)
-    assert isinstance(merge('hello world', None, None), str)
-    assert isinstance(merge('hello world', None, None, False), str)
-    assert isinstance(merge('hello world', [None], [None, False]), str)
-    assert isinstance(merge('hello world', [None], [None, [False, 'some-class'], []]), str)
+    assert isinstance(merge(""), str)
+    assert isinstance(merge("hello world"), str)
+    assert isinstance(merge("-:-:-:::---h-"), str)
+    assert isinstance(merge("hello world", "-:-:-:::---h-"), str)
+    assert isinstance(merge("hello world", "-:-:-:::---h-", "", "something"), str)
+    assert isinstance(merge("hello world", None), str)
+    assert isinstance(merge("hello world", None, None), str)
+    assert isinstance(merge("hello world", None, None, False), str)
+    assert isinstance(merge("hello world", [None], [None, False]), str)
+    assert isinstance(
+        merge("hello world", [None], [None, [False, "some-class"], []]), str
+    )
 
 
 def test_createtailwindmerge_has_correct_inputs_and_outputs():
     assert callable(create_tailwind_merge(get_default_config))
-    assert callable(create_tailwind_merge(lambda: {
-        "cache_size": 0,
-        "theme": {},
-        "class_groups": {},
-        "conflicting_class_groups": {},
-        "conflicting_class_group_modifiers": {},
-        "order_sensitive_modifiers": [],
-    }))
+    assert callable(
+        create_tailwind_merge(
+            lambda: {
+                "cache_size": 0,
+                "theme": {},
+                "class_groups": {},
+                "conflicting_class_groups": {},
+                "conflicting_class_group_modifiers": {},
+                "order_sensitive_modifiers": [],
+            }
+        )
+    )
 
-    tailwind_merge = create_tailwind_merge(lambda: {
-        "cache_size": 20,
-        "theme": {},
-        "class_groups": {
-            "fooKey": [{"fooKey": ["bar", "baz"]}],
-            "fooKey2": [{"fooKey": ["qux", "quux"]}],
-            "otherKey": ["nother", "group"],
-        },
-        "conflicting_class_groups": {
-            "fooKey": ["otherKey"],
-            "otherKey": ["fooKey", "fooKey2"],
-        },
-        "conflicting_class_group_modifiers": {},
-        "order_sensitive_modifiers": [],
-    })
+    tailwind_merge = create_tailwind_merge(
+        lambda: {
+            "cache_size": 20,
+            "theme": {},
+            "class_groups": {
+                "fooKey": [{"fooKey": ["bar", "baz"]}],
+                "fooKey2": [{"fooKey": ["qux", "quux"]}],
+                "otherKey": ["nother", "group"],
+            },
+            "conflicting_class_groups": {
+                "fooKey": ["otherKey"],
+                "otherKey": ["fooKey", "fooKey2"],
+            },
+            "conflicting_class_group_modifiers": {},
+            "order_sensitive_modifiers": [],
+        }
+    )
 
     assert callable(tailwind_merge)
-    assert isinstance(tailwind_merge(''), str)
-    assert isinstance(tailwind_merge('hello world'), str)
-    assert isinstance(tailwind_merge('-:-:-:::---h-'), str)
-    assert isinstance(tailwind_merge('hello world', '-:-:-:::---h-'), str)
-    assert isinstance(tailwind_merge('hello world', '-:-:-:::---h-', '', 'something'), str)
-    assert isinstance(tailwind_merge('hello world', None), str)
-    assert isinstance(tailwind_merge('hello world', None, None), str)
-    assert isinstance(tailwind_merge('hello world', None, None, False), str)
-    assert isinstance(tailwind_merge('hello world', [None], [None, False]), str)
-    assert isinstance(tailwind_merge('hello world', [None], [None, [False, 'some-class'], []]), str)
+    assert isinstance(tailwind_merge(""), str)
+    assert isinstance(tailwind_merge("hello world"), str)
+    assert isinstance(tailwind_merge("-:-:-:::---h-"), str)
+    assert isinstance(tailwind_merge("hello world", "-:-:-:::---h-"), str)
+    assert isinstance(
+        tailwind_merge("hello world", "-:-:-:::---h-", "", "something"), str
+    )
+    assert isinstance(tailwind_merge("hello world", None), str)
+    assert isinstance(tailwind_merge("hello world", None, None), str)
+    assert isinstance(tailwind_merge("hello world", None, None, False), str)
+    assert isinstance(tailwind_merge("hello world", [None], [None, False]), str)
+    assert isinstance(
+        tailwind_merge("hello world", [None], [None, [False, "some-class"], []]), str
+    )
 
 
 def test_validators_have_correct_inputs_and_outputs():
-    assert isinstance(validators.is_fraction(''), bool)
-    assert isinstance(validators.is_arbitrary_length(''), bool)
-    assert isinstance(validators.is_integer(''), bool)
-    assert isinstance(validators.is_arbitrary_value(''), bool)
-    assert isinstance(validators.is_arbitrary_variable(''), bool)
-    assert isinstance(validators.is_any(''), bool)
-    assert isinstance(validators.is_tshirt_size(''), bool)
-    assert isinstance(validators.is_arbitrary_size(''), bool)
-    assert isinstance(validators.is_arbitrary_position(''), bool)
-    assert isinstance(validators.is_arbitrary_image(''), bool)
-    assert isinstance(validators.is_arbitrary_number(''), bool)
-    assert isinstance(validators.is_arbitrary_shadow(''), bool)
+    assert isinstance(validators.is_fraction(""), bool)
+    assert isinstance(validators.is_arbitrary_length(""), bool)
+    assert isinstance(validators.is_integer(""), bool)
+    assert isinstance(validators.is_arbitrary_value(""), bool)
+    assert isinstance(validators.is_arbitrary_variable(""), bool)
+    assert isinstance(validators.is_any(""), bool)
+    assert isinstance(validators.is_tshirt_size(""), bool)
+    assert isinstance(validators.is_arbitrary_size(""), bool)
+    assert isinstance(validators.is_arbitrary_position(""), bool)
+    assert isinstance(validators.is_arbitrary_image(""), bool)
+    assert isinstance(validators.is_arbitrary_number(""), bool)
+    assert isinstance(validators.is_arbitrary_shadow(""), bool)
 
 
 def test_mergeconfigs_has_correct_inputs_and_outputs():
@@ -136,15 +148,15 @@ def test_extendtailwindmerge_has_correct_inputs_and_outputs():
 
 
 def test_fromtheme_has_correct_inputs_and_outputs():
-    assert callable(from_theme('spacing'))
-    
-    theme_getter = from_theme('foo')
+    assert callable(from_theme("spacing"))
+
+    theme_getter = from_theme("foo")
     assert callable(theme_getter)
-    assert getattr(theme_getter, 'is_theme_getter', False) is True
+    assert getattr(theme_getter, "is_theme_getter", False) is True
     assert theme_getter({"foo": ["hello"]}) == ["hello"]
 
 
 def test_twjoin_has_correct_inputs_and_outputs():
     assert isinstance(tw_join(), str)
-    assert isinstance(tw_join(''), str)
-    assert isinstance(tw_join('', [False, None, None, 0, [], [False, [''], '']]), str) 
+    assert isinstance(tw_join(""), str)
+    assert isinstance(tw_join("", [False, None, None, 0, [], [False, [""], ""]]), str)

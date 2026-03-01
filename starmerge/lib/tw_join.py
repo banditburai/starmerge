@@ -1,4 +1,4 @@
-type ClassNameValue = list['ClassNameValue'] | str | None | bool | int
+type ClassNameValue = list["ClassNameValue"] | str | None | bool | int
 
 
 def tw_join(*class_lists: ClassNameValue) -> str:
@@ -8,14 +8,14 @@ def tw_join(*class_lists: ClassNameValue) -> str:
             value = _to_value(argument)
             if value:
                 result.append(value)
-    return ' '.join(result)
+    return " ".join(result)
 
 
 def _to_value(mix: ClassNameValue) -> str:
     if isinstance(mix, str):
         return mix
     if not isinstance(mix, list):
-        return ''
+        return ""
     result = []
     for item in mix:
         if not item:
@@ -28,4 +28,4 @@ def _to_value(mix: ClassNameValue) -> str:
             value = str(item)
         if value:
             result.append(value)
-    return ' '.join(result)
+    return " ".join(result)

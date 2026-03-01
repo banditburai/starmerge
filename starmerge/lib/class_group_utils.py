@@ -23,7 +23,7 @@ class ClassValidatorObject:
 
 @dataclass(slots=True)
 class ClassPartObject:
-    next_part: dict[str, 'ClassPartObject'] = field(default_factory=dict)
+    next_part: dict[str, "ClassPartObject"] = field(default_factory=dict)
     validators: list[ClassValidatorObject] = field(default_factory=list)
     class_group_id: AnyClassGroupIds | None = None
 
@@ -31,18 +31,21 @@ class ClassPartObject:
 def create_class_group_utils(config: Config) -> tuple[ClassGroupGetter, ConflictGetter]:
     class_map = _create_class_map(config)
 
-    conflicting_class_groups = config.get('conflicting_class_groups', {})
-    conflicting_class_group_modifiers = config.get('conflicting_class_group_modifiers', {})
+    conflicting_class_groups = config.get("conflicting_class_groups", {})
+    conflicting_class_group_modifiers = config.get(
+        "conflicting_class_group_modifiers", {}
+    )
 
     def get_class_group_id(class_name: str) -> AnyClassGroupIds | None:
-        class_parts = class_name.split('-')
+        class_parts = class_name.split("-")
 
         # Leading `-` (e.g. `-inset-1`) produces empty first part
-        if class_parts[0] == '' and len(class_parts) > 1:
+        if class_parts[0] == "" and len(class_parts) > 1:
             class_parts = class_parts[1:]
 
-        return (_get_group_recursive(class_parts, class_map) or
-                _get_group_id_for_arbitrary_property(class_name))
+        return _get_group_recursive(
+            class_parts, class_map
+        ) or _get_group_id_for_arbitrary_property(class_name)
 
     def get_conflicting_class_group_ids(
         class_group_id: AnyClassGroupIds,
@@ -74,7 +77,7 @@ def _get_group_recursive(
     if not class_part_object.validators:
         return None
 
-    class_rest = '-'.join(class_parts[index:])
+    class_rest = "-".join(class_parts[index:])
     for validator_obj in class_part_object.validators:
         if validator_obj.validator(class_rest):
             return validator_obj.class_group_id
@@ -83,17 +86,17 @@ def _get_group_recursive(
 
 
 def _get_group_id_for_arbitrary_property(class_name: str) -> str | None:
-    if class_name.startswith('[') and class_name.endswith(']') and len(class_name) > 2:
+    if class_name.startswith("[") and class_name.endswith("]") and len(class_name) > 2:
         inner = class_name[1:-1]
-        if ':' in inner:
+        if ":" in inner:
             # Two dots: one is used as prefix for class groups in plugins
-            return f'arbitrary..{inner.split(":", 1)[0]}'
+            return f"arbitrary..{inner.split(':', 1)[0]}"
     return None
 
 
 def _create_class_map(config: Config) -> ClassPartObject:
-    theme = config.get('theme', {})
-    class_groups = config.get('class_groups', {})
+    theme = config.get("theme", {})
+    class_groups = config.get("class_groups", {})
     class_map = ClassPartObject()
 
     for class_group_id, class_group in class_groups.items():
@@ -123,7 +126,7 @@ def _process_classes_recursively(
         case str():
             target = (
                 class_part_object
-                if class_definition == ''
+                if class_definition == ""
                 else _get_part(class_part_object, class_definition, depth + 1, visited)
             )
             target.class_group_id = class_group_id
@@ -149,7 +152,12 @@ def _process_classes_recursively(
         case list():
             for sub_def in class_definition:
                 _process_classes_recursively(
-                    sub_def, class_part_object, class_group_id, theme, depth + 1, visited,
+                    sub_def,
+                    class_part_object,
+                    class_group_id,
+                    theme,
+                    depth + 1,
+                    visited,
                 )
 
         case dict():
@@ -182,11 +190,13 @@ def _get_part(
     visited.add(path)
 
     current_object = class_part_object
-    for path_part in path.split('-'):
-        current_object = current_object.next_part.setdefault(path_part, ClassPartObject())
+    for path_part in path.split("-"):
+        current_object = current_object.next_part.setdefault(
+            path_part, ClassPartObject()
+        )
 
     return current_object
 
 
 def _is_theme_getter(func: ClassValidator | ThemeGetter) -> bool:
-    return getattr(func, 'is_theme_getter', False)
+    return getattr(func, "is_theme_getter", False)

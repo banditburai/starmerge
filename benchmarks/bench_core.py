@@ -1,13 +1,19 @@
 """Benchmarks for StarMerge core hot paths."""
 
 import time
-from starmerge import merge, tw_join, get_default_config
+
+from starmerge import get_default_config, merge, tw_join
 from starmerge.lib.lru_cache import create_lru_cache
-from starmerge.lib.validators import (
-    is_length, is_color, is_number, is_arbitrary_value,
-    is_arbitrary_variable, is_tshirt_size, is_fraction,
-)
 from starmerge.lib.parse_class_name import create_parse_class_name
+from starmerge.lib.validators import (
+    is_arbitrary_value,
+    is_arbitrary_variable,
+    is_color,
+    is_fraction,
+    is_length,
+    is_number,
+    is_tshirt_size,
+)
 
 
 def bench(name: str, fn, iterations: int = 10_000):
@@ -24,7 +30,9 @@ def bench(name: str, fn, iterations: int = 10_000):
     per_call_us = per_call_ns / 1000
     total_ms = elapsed_ns / 1_000_000
 
-    print(f"  {name:.<50} {per_call_us:>8.2f} us/call  ({total_ms:.1f}ms total, {iterations:,} iters)")
+    print(
+        f"  {name:.<50} {per_call_us:>8.2f} us/call  ({total_ms:.1f}ms total, {iterations:,} iters)"
+    )
     return per_call_ns
 
 
@@ -37,19 +45,30 @@ def main():
     # --- tailwind_merge / merge ---
     print("[ merge / tailwind_merge ]")
     bench("merge: simple (2 classes)", lambda: merge("p-4 p-2"))
-    bench("merge: medium (5 classes)", lambda: merge("p-4 px-2 text-red-500 bg-blue-200 font-bold"))
+    bench(
+        "merge: medium (5 classes)",
+        lambda: merge("p-4 px-2 text-red-500 bg-blue-200 font-bold"),
+    )
     bench("merge: conflict resolution", lambda: merge("p-4 px-2 pt-3"))
     bench("merge: modifiers", lambda: merge("hover:p-4 hover:p-2"))
-    bench("merge: complex (10 classes)", lambda: merge(
-        "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold hover:text-green-300 "
-        "focus:ring-2 sm:p-6 md:text-lg"
-    ))
-    bench("merge: long string (20 classes)", lambda: merge(
-        "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold hover:text-green-300 "
-        "focus:ring-2 sm:p-6 md:text-lg w-full h-screen flex items-center "
-        "justify-center gap-4 rounded-lg shadow-md border border-gray-200"
-    ))
-    bench("merge: no conflicts", lambda: merge("p-4 text-red-500 bg-blue-200 font-bold"))
+    bench(
+        "merge: complex (10 classes)",
+        lambda: merge(
+            "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold hover:text-green-300 "
+            "focus:ring-2 sm:p-6 md:text-lg"
+        ),
+    )
+    bench(
+        "merge: long string (20 classes)",
+        lambda: merge(
+            "p-4 px-2 pt-3 text-red-500 bg-blue-200 font-bold hover:text-green-300 "
+            "focus:ring-2 sm:p-6 md:text-lg w-full h-screen flex items-center "
+            "justify-center gap-4 rounded-lg shadow-md border border-gray-200"
+        ),
+    )
+    bench(
+        "merge: no conflicts", lambda: merge("p-4 text-red-500 bg-blue-200 font-bold")
+    )
     bench("merge: all conflicts", lambda: merge("p-1 p-2 p-3 p-4 p-5"))
 
     print()
@@ -57,9 +76,18 @@ def main():
     # --- tw_join ---
     print("[ tw_join ]")
     bench("tw_join: simple strings", lambda: tw_join("p-4", "text-red-500"))
-    bench("tw_join: 5 strings", lambda: tw_join("p-4", "text-red-500", "bg-blue-200", "font-bold", "m-2"))
-    bench("tw_join: nested lists", lambda: tw_join(["p-4", ["text-red-500", "bg-blue-200"]], "font-bold"))
-    bench("tw_join: with falsy values", lambda: tw_join("p-4", None, False, "", "text-red-500", 0))
+    bench(
+        "tw_join: 5 strings",
+        lambda: tw_join("p-4", "text-red-500", "bg-blue-200", "font-bold", "m-2"),
+    )
+    bench(
+        "tw_join: nested lists",
+        lambda: tw_join(["p-4", ["text-red-500", "bg-blue-200"]], "font-bold"),
+    )
+    bench(
+        "tw_join: with falsy values",
+        lambda: tw_join("p-4", None, False, "", "text-red-500", 0),
+    )
 
     print()
 
@@ -82,7 +110,10 @@ def main():
     bench("is_number: '42'", lambda: is_number("42"))
     bench("is_number: '3.14'", lambda: is_number("3.14"))
     bench("is_arbitrary_value: '[10px]'", lambda: is_arbitrary_value("[10px]"))
-    bench("is_arbitrary_variable: '(--my-var)'", lambda: is_arbitrary_variable("(--my-var)"))
+    bench(
+        "is_arbitrary_variable: '(--my-var)'",
+        lambda: is_arbitrary_variable("(--my-var)"),
+    )
     bench("is_tshirt_size: 'xl'", lambda: is_tshirt_size("xl"))
     bench("is_fraction: '1/2'", lambda: is_fraction("1/2"))
 
@@ -113,7 +144,9 @@ def main():
         merge(classes)
     elapsed = time.perf_counter_ns() - start
     ops_per_sec = iters / (elapsed / 1_000_000_000)
-    print(f"  Throughput (8-class merge).................. {ops_per_sec:>10,.0f} ops/sec")
+    print(
+        f"  Throughput (8-class merge).................. {ops_per_sec:>10,.0f} ops/sec"
+    )
 
     # Uncached throughput (unique strings)
     unique_classes = [f"p-{i} px-{i} text-red-{i}" for i in range(1000)]
@@ -122,7 +155,9 @@ def main():
         merge(cls)
     elapsed = time.perf_counter_ns() - start
     ops_per_sec = len(unique_classes) / (elapsed / 1_000_000_000)
-    print(f"  Throughput (uncached, unique strings)....... {ops_per_sec:>10,.0f} ops/sec")
+    print(
+        f"  Throughput (uncached, unique strings)....... {ops_per_sec:>10,.0f} ops/sec"
+    )
 
     print()
 
