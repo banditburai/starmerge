@@ -1,19 +1,7 @@
-"""
-Python equivalent of js-source/modifiers.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-
-This test file verifies the handling of modifiers (both prefix and postfix) in tw_merge.
-"""
-
-import pytest
 from starmerge import merge, create_tailwind_merge
 
 
 def test_conflicts_across_prefix_modifiers():
-    """Test handling of conflicts across prefix modifiers like hover: and focus:."""
     assert merge('hover:block hover:inline') == 'hover:inline'
     assert merge('hover:block hover:focus:inline') == 'hover:block hover:focus:inline'
     assert merge('hover:block hover:focus:inline focus:hover:inline') == 'hover:block focus:hover:inline'
@@ -21,7 +9,6 @@ def test_conflicts_across_prefix_modifiers():
 
 
 def test_conflicts_across_postfix_modifiers():
-    """Test handling of conflicts across postfix modifiers like /7, /8 and fractions."""
     assert merge('text-lg/7 text-lg/8') == 'text-lg/8'
     assert merge('text-lg/none leading-9') == 'text-lg/none leading-9'
     assert merge('leading-9 text-lg/none') == 'text-lg/none'
@@ -52,7 +39,6 @@ def test_conflicts_across_postfix_modifiers():
 
 
 def test_sorts_modifiers_correctly():
-    """Test that modifiers are sorted correctly when determining conflicts."""
     assert merge('c:d:e:block d:c:e:inline') == 'd:c:e:inline'
     assert merge('*:before:block *:before:inline') == '*:before:inline'
     assert merge('*:before:block before:*:inline') == '*:before:block before:*:inline'
@@ -60,7 +46,6 @@ def test_sorts_modifiers_correctly():
 
 
 def test_sorts_modifiers_correctly_according_to_ordersensitivemodifiers():
-    """Test that order-sensitive modifiers are respected when determining conflicts."""
     custom_tw_merge = create_tailwind_merge(lambda: {
         "cache_size": 10,
         "theme": {},

@@ -1,21 +1,18 @@
-"""Theme getter utility for creating functions that access theme values."""
-
-from typing import Any, Dict, List, Protocol, Union
-
-from starmerge.lib.types import AnyThemeGroupIds, ThemeObject
+from starmerge.lib.types import AnyThemeGroupIds, ClassGroup, ThemeObject
 
 
-class ThemeGetter(Protocol):
-    """Theme getter function type."""
-    isThemeGetter: bool
-    def __call__(self, theme: ThemeObject) -> List[Any]: ...
+class _ThemeGetter:
+    __slots__ = ('key',)
+    is_theme_getter: bool = True
 
+    def __init__(self, key: AnyThemeGroupIds) -> None:
+        self.key = key
 
-def from_theme(key: AnyThemeGroupIds) -> ThemeGetter:
-    def theme_getter(theme: Union[ThemeObject, Any]) -> List[Any]:
+    def __call__(self, theme: ThemeObject) -> ClassGroup:
         if not isinstance(theme, dict):
             return []
-        return theme.get(key, [])
+        return theme.get(self.key, [])
 
-    setattr(theme_getter, 'is_theme_getter', True)
-    return theme_getter  # type: ignore
+
+def from_theme(key: AnyThemeGroupIds) -> _ThemeGetter:
+    return _ThemeGetter(key)

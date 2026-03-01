@@ -1,20 +1,7 @@
-"""
-Python equivalent of js-source/create-tailwind-merge.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-
-Note: The test for 'fooKey-bar hello-there' has been adjusted to match the
-actual behavior of both implementations where conflicts are properly resolved.
-"""
-
-import pytest
 from starmerge import create_tailwind_merge
 
 
 def test_createtailwindmerge_works_with_single_config_function():
-    """Equivalent to the 'createTailwindMerge works with single config function' test in TypeScript."""
     def config_fn():
         return {
             "cache_size": 20,
@@ -44,7 +31,6 @@ def test_createtailwindmerge_works_with_single_config_function():
 
 
 def test_createtailwindmerge_works_with_multiple_config_functions():
-    """Equivalent to the 'createTailwindMerge works with multiple config functions' test in TypeScript."""
     def first_config_fn():
         return {
             "cache_size": 20,

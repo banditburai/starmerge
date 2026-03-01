@@ -1,42 +1,30 @@
-"""
-LRU cache implementation inspired by hashlru but using Python dictionaries.
-https://github.com/dominictarr/hashlru
-"""
-
-from typing import Dict, Generic, Optional, Protocol, TypeVar, Callable, Any
-
-K = TypeVar('K')
-V = TypeVar('V')
+from typing import Protocol
 
 
-class LruCache(Protocol, Generic[K, V]):
-    """Protocol defining the interface for an LRU cache."""
-    def get(self, key: K) -> Optional[V]: ...
+class LruCache[K, V](Protocol):
+    def get(self, key: K) -> V | None: ...
     def set(self, key: K, value: V) -> None: ...
 
 
-class DefaultLruCache(Generic[K, V]):
-    """
-    LRU cache using two dictionaries for efficiency.
-    When max size is reached, the older dictionary is cleared and swapped.
-    """
+class DefaultLruCache[K, V]:
+    """Two-dict LRU: when max size is reached, the older dict is swapped out."""
 
     def __init__(self, max_cache_size: int):
         self.max_cache_size = max_cache_size
         self.cache_size = 0
-        self.cache: Dict[K, V] = {}
-        self.previous_cache: Dict[K, V] = {}
+        self.cache: dict[K, V] = {}
+        self.previous_cache: dict[K, V] = {}
 
     def _update(self, key: K, value: V) -> None:
         self.cache[key] = value
         self.cache_size += 1
-        
+
         if self.cache_size > self.max_cache_size:
             self.cache_size = 0
             self.previous_cache = self.cache
             self.cache = {}
 
-    def get(self, key: K) -> Optional[V]:
+    def get(self, key: K) -> V | None:
         value = self.cache.get(key)
         if value is not None:
             return value
@@ -55,9 +43,8 @@ class DefaultLruCache(Generic[K, V]):
             self._update(key, value)
 
 
-class EmptyLruCache(Generic[K, V]):
-    """No-op cache used when cache size is < 1."""
-    def get(self, key: K) -> Optional[V]:
+class EmptyLruCache[K, V]:
+    def get(self, key: K) -> V | None:
         return None
     def set(self, key: K, value: V) -> None:
         pass
@@ -66,5 +53,4 @@ class EmptyLruCache(Generic[K, V]):
 def create_lru_cache(max_cache_size: int) -> LruCache:
     if max_cache_size < 1:
         return EmptyLruCache()
-    
     return DefaultLruCache(max_cache_size)

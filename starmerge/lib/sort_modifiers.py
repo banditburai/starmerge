@@ -1,37 +1,20 @@
-"""
-Sort modifiers utility for tailwind-merge.
-
-Position-sensitive modifiers (arbitrary variants and configured sensitive modifiers)
-are preserved in their original position, while others are sorted alphabetically.
-"""
-
-from typing import List, Callable, Dict
+from collections.abc import Callable
 
 from starmerge.lib.types import AnyConfig
 
 
-def create_sort_modifiers(config: AnyConfig) -> Callable[[List[str]], List[str]]:
-    order_sensitive_modifiers: Dict[str, bool] = {}
-    sensitive_modifiers = config.get('order_sensitive_modifiers',
-                                    config.get('orderSensitiveModifiers', []))
+def create_sort_modifiers(config: AnyConfig) -> Callable[[list[str]], list[str]]:
+    sensitive = set(config.get('order_sensitive_modifiers', []))
 
-    for modifier in sensitive_modifiers:
-        order_sensitive_modifiers[modifier] = True
-
-    def sort_modifiers(modifiers: List[str]) -> List[str]:
+    def sort_modifiers(modifiers: list[str]) -> list[str]:
         if len(modifiers) <= 1:
             return modifiers
 
-        sorted_modifiers: List[str] = []
-        unsorted_modifiers: List[str] = []
+        sorted_modifiers: list[str] = []
+        unsorted_modifiers: list[str] = []
 
         for modifier in modifiers:
-            is_position_sensitive = (
-                modifier.startswith('[') or
-                modifier in order_sensitive_modifiers
-            )
-
-            if is_position_sensitive:
+            if modifier.startswith('[') or modifier in sensitive:
                 sorted_modifiers.extend(sorted(unsorted_modifiers))
                 sorted_modifiers.append(modifier)
                 unsorted_modifiers = []

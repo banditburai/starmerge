@@ -1,17 +1,7 @@
-"""
-Python equivalent of js-source/tw-merge.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-"""
-
-import pytest
 from starmerge import merge
 
 
 def test_merge():
-    """Test that merge correctly handles various Tailwind CSS class merging scenarios."""
     assert merge('mix-blend-normal mix-blend-multiply') == 'mix-blend-multiply'
     assert merge('h-10 h-min') == 'h-min'
     assert merge('stroke-black stroke-1') == 'stroke-black stroke-1'

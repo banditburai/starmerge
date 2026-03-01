@@ -1,17 +1,7 @@
-"""
-Python equivalent of js-source/arbitrary-values.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-"""
-
-import pytest
 from starmerge import merge
 
 
 def test_handles_simple_conflicts_with_arbitrary_values_correctly():
-    """Equivalent to the 'handles simple conflicts with arbitrary values correctly' test in TypeScript."""
     assert merge('m-[2px] m-[10px]') == 'm-[10px]'
     assert merge(
         'm-[2px] m-[11svmin] m-[12in] m-[13lvi] m-[14vb] m-[15vmax] m-[16mm] m-[17%] m-[18em] m-[19px] m-[10dvh]'
@@ -35,7 +25,6 @@ def test_handles_simple_conflicts_with_arbitrary_values_correctly():
 
 
 def test_handles_arbitrary_length_conflicts_with_labels_and_modifiers_correctly():
-    """Equivalent to the 'handles arbitrary length conflicts with labels and modifiers correctly' test in TypeScript."""
     assert merge('hover:m-[2px] hover:m-[length:var(--c)]') == 'hover:m-[length:var(--c)]'
     assert merge('hover:focus:m-[2px] focus:hover:m-[length:var(--c)]') == 'focus:hover:m-[length:var(--c)]'
     assert merge('border-b border-[color:rgb(var(--color-gray-500-rgb)/50%))]') == 'border-b border-[color:rgb(var(--color-gray-500-rgb)/50%))]'
@@ -44,13 +33,11 @@ def test_handles_arbitrary_length_conflicts_with_labels_and_modifiers_correctly(
 
 
 def test_handles_complex_arbitrary_value_conflicts_correctly():
-    """Equivalent to the 'handles complex arbitrary value conflicts correctly' test in TypeScript."""
     assert merge('grid-rows-[1fr,auto] grid-rows-2') == 'grid-rows-2'
     assert merge('grid-rows-[repeat(20,minmax(0,1fr))] grid-rows-3') == 'grid-rows-3'
 
 
 def test_handles_ambiguous_arbitrary_values_correctly():
-    """Equivalent to the 'handles ambiguous arbitrary values correctly' test in TypeScript."""
     assert merge('mt-2 mt-[calc(theme(fontSize.4xl)/1.125)]') == 'mt-[calc(theme(fontSize.4xl)/1.125)]'
     assert merge('p-2 p-[calc(theme(fontSize.4xl)/1.125)_10px]') == 'p-[calc(theme(fontSize.4xl)/1.125)_10px]'
     assert merge('mt-2 mt-[length:theme(someScale.someValue)]') == 'mt-[length:theme(someScale.someValue)]'
@@ -62,6 +49,5 @@ def test_handles_ambiguous_arbitrary_values_correctly():
 
 
 def test_handles_arbitrary_custom_properties_correctly():
-    """Equivalent to the 'handles arbitrary custom properties correctly' test in TypeScript."""
     assert merge('bg-red bg-(--other-red) bg-bottom bg-(position:-my-pos)') == 'bg-(--other-red) bg-(position:-my-pos)'
     assert merge('shadow-xs shadow-(shadow:--something) shadow-red shadow-(--some-other-shadow) shadow-(color:--some-color)') == 'shadow-(--some-other-shadow) shadow-(color:--some-color)' 

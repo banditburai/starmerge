@@ -1,19 +1,7 @@
-"""
-Python equivalent of js-source/theme.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-
-This test file verifies the behavior of theme extension functionality in tailwind-merge.
-"""
-
-import pytest
-from starmerge import merge, extend_tailwind_merge, from_theme
+from starmerge import extend_tailwind_merge, from_theme
 
 
 def test_theme_scale_can_be_extended():
-    """Test that theme scale can be extended."""
     tailwind_merge = extend_tailwind_merge({
         'extend': {
             'theme': {
@@ -28,13 +16,12 @@ def test_theme_scale_can_be_extended():
 
 
 def test_theme_object_can_be_extended():
-    """Test that theme object can be extended."""
     tailwind_merge = extend_tailwind_merge({
         'extend': {
             'theme': {
                 'my-theme': ['hallo', 'hello'],
             },
-            'classGroups': {
+            'class_groups': {
                 'px': [{'px': [from_theme('my-theme')]}],
             },
         },

@@ -1,9 +1,4 @@
-"""Default configuration for tailwind-merge, converted from TypeScript."""
-
-from typing import Dict, List, Any, Union, Callable, Optional
-
 from starmerge.lib.from_theme import from_theme
-from starmerge.lib.types import Config
 from starmerge.lib.validators import (
     is_any,
     is_any_non_arbitrary,
@@ -29,10 +24,7 @@ from starmerge.lib.validators import (
 )
 
 
-def get_default_config(previous_config=None):
-    # =========================================================================
-    # SECTION 1: Theme Getters
-    # =========================================================================
+def get_default_config(_previous_config=None):  # noqa: ARG001 - accepts arg for use as CreateConfigSubsequent
     theme_color = from_theme('color')
     theme_font = from_theme('font')
     theme_text = from_theme('text')
@@ -51,10 +43,6 @@ def get_default_config(previous_config=None):
     theme_aspect = from_theme('aspect')
     theme_ease = from_theme('ease')
     theme_animate = from_theme('animate')
-    
-    # =========================================================================
-    # SECTION 2: Scale Functions
-    # =========================================================================
 
     def scale_break():
         return ['auto', 'avoid', 'all', 'avoid-page', 'page', 'left', 'right', 'column']
@@ -71,22 +59,22 @@ def get_default_config(previous_config=None):
             'right-top',
             'top',
         ]
-    
+
     def scale_overflow():
         return ['auto', 'hidden', 'clip', 'visible', 'scroll']
-    
+
     def scale_overscroll():
         return ['auto', 'contain', 'none']
-    
+
     def scale_unambiguous_spacing():
         return [is_arbitrary_variable, is_arbitrary_value, 'px', is_number, theme_spacing]
-    
+
     def scale_inset():
         return [is_fraction, 'full', 'auto', *scale_unambiguous_spacing()]
-    
+
     def scale_grid_template_cols_rows():
         return [is_integer, 'none', 'subgrid', is_arbitrary_variable, is_arbitrary_value]
-    
+
     def scale_grid_col_row_start_and_end():
         return [
             'auto',
@@ -94,22 +82,22 @@ def get_default_config(previous_config=None):
             is_arbitrary_variable,
             is_arbitrary_value,
         ]
-    
+
     def scale_grid_col_row_start_or_end():
         return [is_integer, 'auto', is_arbitrary_variable, is_arbitrary_value]
-    
+
     def scale_grid_auto_cols_rows():
         return ['auto', 'min', 'max', 'fr', is_arbitrary_variable, is_arbitrary_value]
-    
+
     def scale_align_primary_axis():
         return ['start', 'end', 'center', 'between', 'around', 'evenly', 'stretch', 'baseline']
-    
+
     def scale_align_secondary_axis():
         return ['start', 'end', 'center', 'stretch']
-    
+
     def scale_margin():
         return ['auto', *scale_unambiguous_spacing()]
-    
+
     def scale_sizing():
         return [
             is_fraction,
@@ -127,13 +115,13 @@ def get_default_config(previous_config=None):
             'fit',
             *scale_unambiguous_spacing(),
         ]
-    
+
     def scale_color():
         return [theme_color, is_arbitrary_variable, is_arbitrary_value]
-    
+
     def scale_gradient_stop_position():
         return [is_percent, is_arbitrary_length]
-    
+
     def scale_radius():
         return [
             '',
@@ -143,13 +131,13 @@ def get_default_config(previous_config=None):
             is_arbitrary_variable,
             is_arbitrary_value,
         ]
-    
+
     def scale_border_width():
         return ['', is_number, is_arbitrary_variable_length, is_arbitrary_length]
-    
+
     def scale_line_style():
         return ['solid', 'dashed', 'dotted', 'double']
-    
+
     def scale_blend_mode():
         return [
             'normal',
@@ -169,7 +157,7 @@ def get_default_config(previous_config=None):
             'color',
             'luminosity',
         ]
-    
+
     def scale_blur():
         return [
             '',
@@ -178,7 +166,7 @@ def get_default_config(previous_config=None):
             is_arbitrary_variable,
             is_arbitrary_value,
         ]
-    
+
     def scale_origin():
         return [
             'center',
@@ -193,22 +181,18 @@ def get_default_config(previous_config=None):
             is_arbitrary_variable,
             is_arbitrary_value,
         ]
-    
+
     def scale_rotate():
         return ['none', is_number, is_arbitrary_variable, is_arbitrary_value]
-    
+
     def scale_scale():
         return ['none', is_number, is_arbitrary_variable, is_arbitrary_value]
-    
+
     def scale_skew():
         return [is_number, is_arbitrary_variable, is_arbitrary_value]
-    
+
     def scale_translate():
         return [is_fraction, 'full', *scale_unambiguous_spacing()]
-    
-    # =========================================================================
-    # SECTION 3: Return Configuration Object
-    # =========================================================================
 
     return {
         'cache_size': 500,

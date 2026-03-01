@@ -1,17 +1,7 @@
-"""
-Python equivalent of js-source/tailwind-css-versions.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-"""
-
-import pytest
 from starmerge import merge
 
 
 def test_supports_tailwind_css_v3_3_features():
-    """Test support for Tailwind CSS v3.3 features."""
     assert merge('text-red text-lg/7 text-lg/8') == 'text-red text-lg/8'
     
     assert merge(
@@ -48,7 +38,6 @@ def test_supports_tailwind_css_v3_3_features():
 
 
 def test_supports_tailwind_css_v3_4_features():
-    """Test support for Tailwind CSS v3.4 features."""
     assert merge('h-svh h-dvh w-svw w-dvw') == 'h-dvh w-dvw'
     
     assert merge(
@@ -72,7 +61,6 @@ def test_supports_tailwind_css_v3_4_features():
 
 
 def test_supports_tailwind_css_v4_0_features():
-    """Test support for Tailwind CSS v4.0 features."""
     assert merge('transform-3d transform-flat') == 'transform-flat'
     
     assert merge('rotate-12 rotate-x-2 rotate-none rotate-y-3') == \

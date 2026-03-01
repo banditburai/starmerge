@@ -1,20 +1,7 @@
-"""
-Python equivalent of js-source/prefixes.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-
-This test file verifies that the prefix option works correctly when using 
-extend_tailwind_merge to create a customized merge function.
-"""
-
-import pytest
 from starmerge import extend_tailwind_merge
 
 
 def test_prefix_working_correctly():
-    """Test if the prefix option in extend_tailwind_merge works correctly."""
     tw_merge = extend_tailwind_merge({
         "prefix": "tw"
     })

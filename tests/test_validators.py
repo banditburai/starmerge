@@ -1,26 +1,3 @@
-"""
-Python equivalent of js-source/validators.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-
-This test file verifies the behavior of the validator functions used in tailwind-merge.
-
-Note: Some validator functions from the JavaScript implementation are not present in the Python implementation:
-- isArbitraryVariableFamilyName
-- isArbitraryVariableImage
-- isArbitraryVariableLength
-- isArbitraryVariablePosition
-- isArbitraryVariableShadow
-- isArbitraryVariableSize
-
-These functions are used in the JavaScript implementation to validate arbitrary CSS variables with specific labels,
-but they are not implemented in the Python version. The Python implementation only has a general is_arbitrary_variable
-function that doesn't check for specific labels.
-"""
-
-import pytest
 from starmerge.lib.validators import (
     is_any,
     is_arbitrary_image,
@@ -50,22 +27,13 @@ from starmerge.lib.validators import (
 
 
 def test_is_any():
-    """Test the is_any validator."""
     assert is_any('') is True
     assert is_any('any') is True
     assert is_any('123') is True
 
 
-def test_is_any_non_arbitrary():
-    """Test the is_any_non_arbitrary validator."""
-    # This is testing a function that doesn't exist in the Python implementation.
-    # The JavaScript test might be testing the behavior of isAnyOption.nonArbitrary
-    # We'll comment this out since it doesn't have a direct Python equivalent
-    pass
-
 
 def test_is_arbitrary_image():
-    """Test the is_arbitrary_image validator."""
     assert is_arbitrary_image('') is False
     assert is_arbitrary_image('image') is False
     assert is_arbitrary_image('[image:url(/foo)]') is True
@@ -81,7 +49,6 @@ def test_is_arbitrary_image():
 
 
 def test_is_arbitrary_length():
-    """Test the is_arbitrary_length validator."""
     assert is_arbitrary_length('') is False
     assert is_arbitrary_length('[12px]') is True
     assert is_arbitrary_length('[12%]') is True
@@ -93,7 +60,6 @@ def test_is_arbitrary_length():
 
 
 def test_is_arbitrary_number():
-    """Test the is_arbitrary_number validator."""
     assert is_arbitrary_number('') is False
     assert is_arbitrary_number('[123]') is True
     assert is_arbitrary_number('[12.34]') is True
@@ -103,7 +69,6 @@ def test_is_arbitrary_number():
 
 
 def test_is_arbitrary_position():
-    """Test the is_arbitrary_position validator."""
     assert is_arbitrary_position('') is False
     assert is_arbitrary_position('top') is False
     assert is_arbitrary_position('[position:top]') is True
@@ -116,7 +81,6 @@ def test_is_arbitrary_position():
 
 
 def test_is_arbitrary_shadow():
-    """Test the is_arbitrary_shadow validator."""
     assert is_arbitrary_shadow('') is False
     assert is_arbitrary_shadow('[.5px_1px_black]') is True
     assert is_arbitrary_shadow('[0_0_#ABC123]') is True
@@ -129,7 +93,6 @@ def test_is_arbitrary_shadow():
 
 
 def test_is_arbitrary_size():
-    """Test the is_arbitrary_size validator."""
     assert is_arbitrary_size('') is False
     assert is_arbitrary_size('[12px]') is False
     # Note: Python implementation behaves differently than JavaScript for this case
@@ -141,7 +104,6 @@ def test_is_arbitrary_size():
 
 
 def test_is_arbitrary_value():
-    """Test the is_arbitrary_value validator."""
     assert is_arbitrary_value('') is False
     assert is_arbitrary_value('[]') is False
     # Note: Python implementation behaves differently than JavaScript for this case
@@ -157,7 +119,6 @@ def test_is_arbitrary_value():
 
 
 def test_is_arbitrary_variable():
-    """Test the is_arbitrary_variable validator."""
     assert is_arbitrary_variable('') is False
     assert is_arbitrary_variable('[]') is False
     # Note: Python implementation behaves differently than JavaScript for this case
@@ -173,7 +134,6 @@ def test_is_arbitrary_variable():
 
 
 def test_is_fraction():
-    """Test the is_fraction validator."""
     assert is_fraction('') is False
     assert is_fraction('1/2') is True
     assert is_fraction('100/200') is True
@@ -188,7 +148,6 @@ def test_is_fraction():
 
 
 def test_is_image():
-    """Test the is_image validator."""
     assert is_image('') is False
     assert is_image('image') is False
     assert is_image('url(/foo.png)') is True
@@ -206,7 +165,6 @@ def test_is_image():
 
 
 def test_is_integer():
-    """Test the is_integer validator."""
     assert is_integer('') is False
     assert is_integer('10') is True
     assert is_integer('0') is True
@@ -221,7 +179,6 @@ def test_is_integer():
 
 
 def test_is_length():
-    """Test the is_length validator."""
     assert is_length('') is False
     assert is_length('px') is True
     assert is_length('full') is True
@@ -282,14 +239,12 @@ def test_is_length():
 
 
 def test_is_never():
-    """Test the is_never validator."""
     assert is_never('') is False
     assert is_never('never') is False
     assert is_never('123') is False
 
 
 def test_is_number():
-    """Test the is_number validator."""
     assert is_number('') is False
     assert is_number('1') is True
     assert is_number('1.5') is True
@@ -305,7 +260,6 @@ def test_is_number():
 
 
 def test_is_percent():
-    """Test the is_percent validator."""
     assert is_percent('') is False
     assert is_percent('0') is False
     assert is_percent('0%') is True
@@ -316,7 +270,6 @@ def test_is_percent():
 
 
 def test_is_shadow():
-    """Test the is_shadow validator."""
     assert is_shadow('') is False
     assert is_shadow('1px_1px') is True
     assert is_shadow('0_0') is True
@@ -329,7 +282,6 @@ def test_is_shadow():
 
 
 def test_is_tshirt_size():
-    """Test the is_tshirt_size validator."""
     assert is_tshirt_size('') is False
     assert is_tshirt_size('xs') is True
     assert is_tshirt_size('sm') is True
@@ -343,7 +295,6 @@ def test_is_tshirt_size():
 
 
 def test_is_arbitrary_variable_family_name():
-    """Test the is_arbitrary_variable_family_name validator."""
     assert is_arbitrary_variable_family_name('(family-name:test)') is True
 
     assert is_arbitrary_variable_family_name('(other:test)') is False
@@ -352,7 +303,6 @@ def test_is_arbitrary_variable_family_name():
 
 
 def test_is_arbitrary_variable_image():
-    """Test the is_arbitrary_variable_image validator."""
     assert is_arbitrary_variable_image('(image:test)') is True
     assert is_arbitrary_variable_image('(url:test)') is True
 
@@ -362,7 +312,6 @@ def test_is_arbitrary_variable_image():
 
 
 def test_is_arbitrary_variable_length():
-    """Test the is_arbitrary_variable_length validator."""
     assert is_arbitrary_variable_length('(length:test)') is True
 
     assert is_arbitrary_variable_length('(other:test)') is False
@@ -371,7 +320,6 @@ def test_is_arbitrary_variable_length():
 
 
 def test_is_arbitrary_variable_position():
-    """Test the is_arbitrary_variable_position validator."""
     assert is_arbitrary_variable_position('(position:test)') is True
 
     assert is_arbitrary_variable_position('(other:test)') is False
@@ -380,7 +328,6 @@ def test_is_arbitrary_variable_position():
 
 
 def test_is_arbitrary_variable_shadow():
-    """Test the is_arbitrary_variable_shadow validator."""
     assert is_arbitrary_variable_shadow('(shadow:test)') is True
     assert is_arbitrary_variable_shadow('(test)') is True
 
@@ -389,7 +336,6 @@ def test_is_arbitrary_variable_shadow():
 
 
 def test_is_arbitrary_variable_size():
-    """Test the is_arbitrary_variable_size validator."""
     assert is_arbitrary_variable_size('(size:test)') is True
     assert is_arbitrary_variable_size('(length:test)') is True
     assert is_arbitrary_variable_size('(percentage:test)') is True

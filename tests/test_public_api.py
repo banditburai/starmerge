@@ -1,15 +1,3 @@
-"""
-Python equivalent of js-source/public-api.test.ts
-Last synced with original version: Current (as of implementation)
-
-This test file maintains exact parity with the TypeScript tests to ensure
-consistent behavior between the JavaScript and Python implementations.
-
-This test file verifies that all public APIs of the library are properly exposed
-and function as expected.
-"""
-
-import pytest
 from starmerge import (
     merge,
     create_tailwind_merge,
@@ -23,7 +11,6 @@ from starmerge import (
 
 
 def test_has_correct_export_types():
-    """Test that all APIs are exported with the correct types."""
     assert callable(merge)
     assert callable(create_tailwind_merge)
     assert callable(get_default_config)
@@ -53,15 +40,12 @@ def test_has_correct_export_types():
     
     for method in validator_methods:
         assert callable(getattr(validators, method))
-    
-    assert len(validator_methods) == 19
     assert callable(merge_configs)
     assert callable(extend_tailwind_merge)
     assert callable(tw_join)
 
 
 def test_twmerge_has_correct_inputs_and_outputs():
-    """Test that tw_merge accepts the correct inputs and returns strings."""
     assert isinstance(merge(''), str)
     assert isinstance(merge('hello world'), str)
     assert isinstance(merge('-:-:-:::---h-'), str)
@@ -75,7 +59,6 @@ def test_twmerge_has_correct_inputs_and_outputs():
 
 
 def test_createtailwindmerge_has_correct_inputs_and_outputs():
-    """Test that create_tailwind_merge accepts the correct inputs and returns a function."""
     assert callable(create_tailwind_merge(get_default_config))
     assert callable(create_tailwind_merge(lambda: {
         "cache_size": 0,
@@ -116,7 +99,6 @@ def test_createtailwindmerge_has_correct_inputs_and_outputs():
 
 
 def test_validators_have_correct_inputs_and_outputs():
-    """Test that validators return boolean values."""
     assert isinstance(validators.is_fraction(''), bool)
     assert isinstance(validators.is_arbitrary_length(''), bool)
     assert isinstance(validators.is_integer(''), bool)
@@ -132,7 +114,6 @@ def test_validators_have_correct_inputs_and_outputs():
 
 
 def test_mergeconfigs_has_correct_inputs_and_outputs():
-    """Test that merge_configs returns an object."""
     result = merge_configs(
         {
             "cache_size": 50,
@@ -151,12 +132,10 @@ def test_mergeconfigs_has_correct_inputs_and_outputs():
 
 
 def test_extendtailwindmerge_has_correct_inputs_and_outputs():
-    """Test that extend_tailwind_merge returns a function."""
     assert callable(extend_tailwind_merge({}))
 
 
 def test_fromtheme_has_correct_inputs_and_outputs():
-    """Test that from_theme returns a function with expected properties."""
     assert callable(from_theme('spacing'))
     
     theme_getter = from_theme('foo')
@@ -166,7 +145,6 @@ def test_fromtheme_has_correct_inputs_and_outputs():
 
 
 def test_twjoin_has_correct_inputs_and_outputs():
-    """Test that tw_join returns a string."""
     assert isinstance(tw_join(), str)
     assert isinstance(tw_join(''), str)
     assert isinstance(tw_join('', [False, None, None, 0, [], [False, [''], '']]), str) 

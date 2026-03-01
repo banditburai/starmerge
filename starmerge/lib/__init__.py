@@ -1,6 +1,5 @@
-"""Python port of the tailwind-merge library for efficiently merging Tailwind CSS classes."""
 from . import validators
-from .validators import *
+from .validators import *  # noqa: F403
 from .parse_class_name import create_parse_class_name, IMPORTANT_MODIFIER
 from .lru_cache import create_lru_cache
 from .tw_join import tw_join

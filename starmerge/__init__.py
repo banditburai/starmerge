@@ -1,5 +1,3 @@
-"""Python port of tailwind-merge for merging Tailwind CSS classes and handling conflicts."""
-
 from starmerge.lib.create_tailwind_merge import create_tailwind_merge
 from starmerge.lib.tw_join import tw_join, ClassNameValue
 from starmerge.lib.default_config import get_default_config
@@ -35,6 +33,7 @@ from starmerge.lib.validators import (
     is_shadow,
     is_never,
     is_any_non_arbitrary,
+    is_length_only,
 )
 from starmerge.lib.parse_class_name import create_parse_class_name, IMPORTANT_MODIFIER
 
@@ -75,6 +74,7 @@ __all__ = [
     'is_shadow',
     'is_never',
     'is_any_non_arbitrary',
+    'is_length_only',
     'create_parse_class_name',
     'IMPORTANT_MODIFIER',
 ]
